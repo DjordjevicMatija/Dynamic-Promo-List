@@ -1,6 +1,6 @@
-package rs.ac.bg.etf.dm200157d.dynamicpromolist.data.entities
+package rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.entities
 
-import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.models.MovieResponse
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.MovieResponse
 
 data class Movie(
     val id: Long,

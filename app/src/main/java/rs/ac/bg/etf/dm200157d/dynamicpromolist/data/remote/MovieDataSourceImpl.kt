@@ -1,4 +1,4 @@
-package rs.ac.bg.etf.dm200157d.dynamicpromolist.data.repositories
+package rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote
 
 import android.content.Context
 import okhttp3.Interceptor
@@ -8,7 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import rs.ac.bg.etf.dm200157d.BuildConfig
 import rs.ac.bg.etf.dm200157d.R
-import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.models.MovieResponse
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.MovieResponse
 
 class MovieDataSourceImpl: MovieDataSource {
     private lateinit var movieService: MovieApiService

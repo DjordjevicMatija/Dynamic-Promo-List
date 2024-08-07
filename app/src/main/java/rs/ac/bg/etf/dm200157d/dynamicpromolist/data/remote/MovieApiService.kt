@@ -1,10 +1,10 @@
-package rs.ac.bg.etf.dm200157d.dynamicpromolist.data.repositories
+package rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote
 
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
-import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.models.MovieListResponse
-import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.models.VideoListResponse
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.MovieListResponse
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.VideoListResponse
 
 interface MovieApiService {
 

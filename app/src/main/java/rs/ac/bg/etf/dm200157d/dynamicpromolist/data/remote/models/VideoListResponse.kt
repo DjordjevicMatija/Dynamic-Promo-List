@@ -1,4 +1,4 @@
-package rs.ac.bg.etf.dm200157d.dynamicpromolist.data.models
+package rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName

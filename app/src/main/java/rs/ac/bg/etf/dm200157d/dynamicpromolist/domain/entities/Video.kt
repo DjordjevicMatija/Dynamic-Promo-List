@@ -1,6 +1,6 @@
-package rs.ac.bg.etf.dm200157d.dynamicpromolist.data.entities
+package rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.entities
 
-import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.models.VideoResponse
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.VideoResponse
 
 data class Video(
     val key: String,
