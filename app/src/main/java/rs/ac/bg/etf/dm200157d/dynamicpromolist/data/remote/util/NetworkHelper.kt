@@ -20,5 +20,5 @@ object NetworkHelper {
             NetworkResponse.Failure(e)
         }
     }
-
+    
 }

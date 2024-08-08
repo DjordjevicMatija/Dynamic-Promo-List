@@ -9,7 +9,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import rs.ac.bg.etf.dm200157d.BuildConfig
 import rs.ac.bg.etf.dm200157d.R
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.MovieListResponse
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.MovieResponse
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.NetworkResponse
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.util.NetworkHelper
+
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,7 +22,7 @@ class MovieDataSourceImpl @Inject constructor(
     private val movieService: MovieApiService
 ) : MovieDataSource {
 
-    override suspend fun getMovies(): List<MovieResponse> {
-        TODO("Not yet implemented")
+    override suspend fun getMovies(): NetworkResponse<MovieListResponse> {
+        return NetworkHelper.safeApiCall { movieService.getMovies() }
     }
 }
