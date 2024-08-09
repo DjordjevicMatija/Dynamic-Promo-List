@@ -1,6 +1,6 @@
 [versions]
 agp = "8.5.1"
-kotlin = "2.0.10"
+kotlin = "1.9.25"
 coreKtx = "1.13.1"
 appcompat = "1.7.0"
 composeBom = "2024.06.00"
@@ -13,8 +13,8 @@ activity = "1.9.1"
 constraintlayout = "2.1.4"
 retrofit2 = "2.11.0"
 okhttp3 = "4.12.0"
-kotlinx-serialization = "1.7.1"
-hilt = "2.45"
+kotlinx-serialization = "1.6.3"
+hilt = "2.52"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

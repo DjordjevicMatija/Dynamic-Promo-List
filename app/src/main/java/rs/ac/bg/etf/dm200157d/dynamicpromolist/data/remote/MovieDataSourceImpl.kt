@@ -15,35 +15,8 @@ import javax.inject.Singleton
 
 @Singleton
 class MovieDataSourceImpl @Inject constructor(
-    @ApplicationContext private val context: Context
-): MovieDataSource {
     private val movieService: MovieApiService
-
-    init {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-
-        val authInterceptor = Interceptor { chain ->
-            val request = chain.request().newBuilder()
-                .addHeader("Authorization", "Bearer ${BuildConfig.TMDB_API_KEY}")
-                .build()
-            chain.proceed(request)
-        }
-
-        val client = OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .addInterceptor(authInterceptor)
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(context.getString(R.string.base_url))
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        movieService = retrofit.create(MovieApiService::class.java)
-    }
+) : MovieDataSource {
 
     override suspend fun getMovies(): List<MovieResponse> {
         TODO("Not yet implemented")
