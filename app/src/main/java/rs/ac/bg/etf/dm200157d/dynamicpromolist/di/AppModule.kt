@@ -18,6 +18,8 @@ import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.MovieDataSource
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.MovieDataSourceImpl
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.repository.Repository
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.repository.RepositoryImpl
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.UseCase
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.UseCaseImpl
 import javax.inject.Singleton
 
 @Module
@@ -66,5 +68,13 @@ object AppModule {
         movieDataSource: MovieDataSource
     ): Repository {
         return RepositoryImpl(movieDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUseCase(
+        repository: Repository
+    ): UseCase {
+        return UseCaseImpl(repository)
     }
 }

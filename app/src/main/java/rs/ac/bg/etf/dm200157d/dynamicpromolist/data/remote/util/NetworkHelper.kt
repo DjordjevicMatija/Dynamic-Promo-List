@@ -6,7 +6,7 @@ import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.NetworkRespons
 
 object NetworkHelper {
 
-    suspend fun <T> safeApiCall(apiCall: suspend () -> Response<T>): NetworkResponse<T> {
+    suspend fun <T: Any> safeApiCall(apiCall: suspend () -> Response<T>): NetworkResponse<T> {
         return try {
             val response = apiCall()
             if (response.isSuccessful) {
