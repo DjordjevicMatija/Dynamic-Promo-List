@@ -1,39 +1,26 @@
 package rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models
 
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
+import com.google.gson.annotations.SerializedName
 
-@Serializable
-data class VideoListResponse (
-    val id: Long,
+data class VideoListResponse(
 
-    @SerialName("results")
-    val videos: List<VideoResponse>
+    @SerializedName("id") var id: Int? = null,
+    @SerializedName("results") var results: ArrayList<VideoResponse> = arrayListOf()
+
 )
 
-@Serializable
-data class VideoResponse (
-    @SerialName("iso_639_1")
-    val iso639_1: String,
+data class VideoResponse(
 
-    @SerialName("iso_3166_1")
-    val iso3166_1: String,
+    @SerializedName("iso_639_1") var iso6391: String? = null,
+    @SerializedName("iso_3166_1") var iso31661: String? = null,
+    @SerializedName("name") var name: String? = null,
+    @SerializedName("key") var key: String? = null,
+    @SerializedName("site") var site: String? = null,
+    @SerializedName("size") var size: Int? = null,
+    @SerializedName("type") var type: String? = null,
+    @SerializedName("official") var official: Boolean? = null,
+    @SerializedName("published_at") var publishedAt: String? = null,
+    @SerializedName("id") var id: String? = null
 
-    val name: String,
-
-    val key: String,
-
-    val site: String,
-
-    val size: Long,
-
-    val type: String,
-
-    val official: Boolean,
-
-    @SerialName("published_at")
-    val publishedAt: String,
-
-    val id: String
 )
 

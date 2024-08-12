@@ -1,56 +1,32 @@
 package rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models
 
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
+import com.google.gson.annotations.SerializedName
 
-@Serializable
-data class MovieListResponse (
-    val page: Long,
-    val results: List<MovieResponse>,
+data class MovieListResponse(
 
-    @SerialName("total_pages")
-    val totalPages: Long,
+    @SerializedName("page") var page: Int? = null,
+    @SerializedName("results") var results: ArrayList<MovieResponse> = arrayListOf(),
+    @SerializedName("total_pages") var totalPages: Int? = null,
+    @SerializedName("total_results") var totalResults: Int? = null
 
-    @SerialName("total_results")
-    val totalResults: Long
 )
 
-@Serializable
-data class MovieResponse (
-    val adult: Boolean,
+data class MovieResponse(
 
-    @SerialName("backdrop_path")
-    val backdropPath: String,
+    @SerializedName("adult") var adult: Boolean? = null,
+    @SerializedName("backdrop_path") var backdropPath: String? = null,
+    @SerializedName("genre_ids") var genreIds: ArrayList<Int> = arrayListOf(),
+    @SerializedName("id") var id: Int? = null,
+    @SerializedName("original_language") var originalLanguage: String? = null,
+    @SerializedName("original_title") var originalTitle: String? = null,
+    @SerializedName("overview") var overview: String? = null,
+    @SerializedName("popularity") var popularity: Double? = null,
+    @SerializedName("poster_path") var posterPath: String? = null,
+    @SerializedName("release_date") var releaseDate: String? = null,
+    @SerializedName("title") var title: String? = null,
+    @SerializedName("video") var video: Boolean? = null,
+    @SerializedName("vote_average") var voteAverage: Double? = null,
+    @SerializedName("vote_count") var voteCount: Int? = null
 
-    @SerialName("genre_ids")
-    val genreIDS: List<Long>,
-
-    val id: Long,
-
-    @SerialName("original_language")
-    val originalLanguage: String,
-
-    @SerialName("original_title")
-    val originalTitle: String,
-
-    val overview: String,
-
-    val popularity: Double,
-
-    @SerialName("poster_path")
-    val posterPath: String,
-
-    @SerialName("release_date")
-    val releaseDate: String,
-
-    val title: String,
-
-    val video: Boolean,
-
-    @SerialName("vote_average")
-    val voteAverage: Double,
-
-    @SerialName("vote_count")
-    val voteCount: Long
 )
 
