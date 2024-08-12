@@ -16,6 +16,8 @@ import rs.ac.bg.etf.dm200157d.R
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.MovieApiService
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.MovieDataSource
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.MovieDataSourceImpl
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.repository.Repository
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.repository.RepositoryImpl
 import javax.inject.Singleton
 
 @Module
@@ -56,5 +58,13 @@ object AppModule {
         movieService: MovieApiService
     ): MovieDataSource {
         return MovieDataSourceImpl(movieService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRepository(
+        movieDataSource: MovieDataSource
+    ): Repository {
+        return RepositoryImpl(movieDataSource)
     }
 }

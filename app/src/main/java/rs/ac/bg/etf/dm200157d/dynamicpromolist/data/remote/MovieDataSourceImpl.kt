@@ -17,7 +17,6 @@ import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.util.NetworkHelper
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
 class MovieDataSourceImpl @Inject constructor(
     private val movieService: MovieApiService
 ) : MovieDataSource {
