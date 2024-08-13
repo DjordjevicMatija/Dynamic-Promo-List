@@ -77,6 +77,8 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)
+    implementation(libs.glide)
+    annotationProcessor(libs.glide.compiler)
 }
 
 kapt {

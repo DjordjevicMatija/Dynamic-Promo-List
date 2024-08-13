@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel.moviesLiveData.observe(this){movieList ->
             Log.d("MainActivity", "Movies: $movieList")
+            binding.dynamicPromoList.addData(movieList)
         }
 
         mainViewModel.errorLiveData.observe(this){error ->

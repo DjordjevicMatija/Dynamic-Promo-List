@@ -7,4 +7,13 @@
     android:layout_height="match_parent"
     tools:context=".dynamicpromolist.presentation.MainActivity">
 
+    <rs.ac.bg.etf.dm200157d.dynamicpromolist.presentation.common.DynamicPromoList
+        android:id="@+id/dynamicPromoList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:itemLayoutOrientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:titlePosition="titleInside" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

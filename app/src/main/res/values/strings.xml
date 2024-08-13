@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">DynamicPromoList</string>
     <string name="base_url">https://api.themoviedb.org/3/movie/</string>
+    <string name="title">Title</string>
+    <string name="image_description">Poster</string>
+    <string name="base_image_url">https://image.tmdb.org/t/p/w500</string>
 </resources>
