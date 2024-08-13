@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DynamicPromoList">
+        <attr name="layoutOrientation" format="enum">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
+        <attr name="titleOrientation" format="enum">
+            <enum name="belowImage" value="0" />
+            <enum name="noTitle" value="1" />
+            <enum name="insideImage" value="2" />
+        </attr>
+    </declare-styleable>
+</resources>
