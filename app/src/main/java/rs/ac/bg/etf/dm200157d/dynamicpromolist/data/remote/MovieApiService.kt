@@ -12,5 +12,5 @@ interface MovieApiService {
     suspend fun getMovies(): Response<MovieListResponse>
 
     @GET("{movie_id}/videos")
-    suspend fun getVideos(@Path("movie_id") id: Long): Response<VideoListResponse>
+    suspend fun getVideos(@Path("movie_id") id: Int): Response<VideoListResponse>
 }

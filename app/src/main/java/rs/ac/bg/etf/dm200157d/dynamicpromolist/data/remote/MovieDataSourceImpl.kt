@@ -12,6 +12,7 @@ import rs.ac.bg.etf.dm200157d.R
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.MovieListResponse
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.MovieResponse
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.NetworkResponse
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.VideoListResponse
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.util.NetworkHelper
 
 import javax.inject.Inject
@@ -24,4 +25,9 @@ class MovieDataSourceImpl @Inject constructor(
     override suspend fun getMovies(): NetworkResponse<MovieListResponse> {
         return NetworkHelper.safeApiCall { movieService.getMovies() }
     }
+
+    override suspend fun getVideos(id: Int): NetworkResponse<VideoListResponse> {
+        return NetworkHelper.safeApiCall { movieService.getVideos(id) }
+    }
+
 }

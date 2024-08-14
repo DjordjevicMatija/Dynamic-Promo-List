@@ -9,10 +9,13 @@ import rs.ac.bg.etf.dm200157d.R
 import rs.ac.bg.etf.dm200157d.databinding.DynamicPromoListItemBinding
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.entities.Movie
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.entities.MovieList
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.presentation.util.MovieFocusListener
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.presentation.util.loadImage
 
 class DynamicPromoListAdapter(
     private val itemLayoutOrientation: ItemLayoutOrientation,
     private val titlePosition: TitlePosition,
+    private val movieFocusListener: MovieFocusListener,
     private var movies: MovieList = emptyList()
 ) : RecyclerView.Adapter<DynamicPromoListAdapter.ViewHolder>() {
 
@@ -69,6 +72,11 @@ class DynamicPromoListAdapter(
                 placeholder = R.drawable.placeholder,
                 error = R.drawable.poster_not_found
             )
+
+            binding.moviePoster.setOnFocusChangeListener { _, hasFocus ->
+                if(hasFocus)
+                    movie.id?.let { movieFocusListener.onMovieFocused(it) }
+            }
         }
     }
 }

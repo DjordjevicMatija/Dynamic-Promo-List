@@ -9,6 +9,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import dagger.hilt.android.AndroidEntryPoint
 import rs.ac.bg.etf.dm200157d.databinding.ActivityMainBinding
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.presentation.util.MovieFocusListener
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -28,6 +29,12 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        binding.dynamicPromoList.addListener(object : MovieFocusListener {
+            override fun onMovieFocused(movieId: Int) {
+                mainViewModel.getVideo(movieId)
+            }
+        })
+
         mainViewModel.moviesLiveData.observe(this){movieList ->
             Log.d("MainActivity", "Movies: $movieList")
             binding.dynamicPromoList.addData(movieList)
@@ -35,6 +42,10 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel.errorLiveData.observe(this){error ->
             Log.e("MainActivity", "Error: ${error.message}")
+        }
+
+        mainViewModel.videoLiveData.observe(this){video ->
+            Log.d("MainActivity", "Video: $video")
         }
 
         mainViewModel.getMovies()
