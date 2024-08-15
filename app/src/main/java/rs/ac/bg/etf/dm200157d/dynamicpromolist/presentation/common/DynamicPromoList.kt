@@ -51,7 +51,7 @@ class DynamicPromoList @JvmOverloads constructor(
 
     fun addListener(listener: MovieFocusListener) {
         movieFocusListener = listener
-        adapter = DynamicPromoListAdapter(itemLayoutOrientation, titlePosition, movieFocusListener)
+        adapter = DynamicPromoListAdapter(context, itemLayoutOrientation, titlePosition, movieFocusListener)
         binding.recyclerView.adapter = adapter
     }
 }

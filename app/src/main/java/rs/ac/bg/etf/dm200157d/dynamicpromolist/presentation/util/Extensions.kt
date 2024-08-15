@@ -1,5 +1,6 @@
 package rs.ac.bg.etf.dm200157d.dynamicpromolist.presentation.util
 
+import android.content.Context
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -26,4 +27,9 @@ fun ImageView.loadImage(
     }
 
     glideRequest.into(this)
+}
+
+fun Context.dpToPx(dp: Int): Int {
+    val density = resources.displayMetrics.density
+    return (dp * density).toInt()
 }
