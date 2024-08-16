@@ -51,6 +51,14 @@ android {
     }
 }
 
+repositories {
+    flatDir {
+        dirs("libs")
+    }
+    google()
+    mavenCentral()
+}
+
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -79,6 +87,7 @@ dependencies {
     kapt(libs.hilt.compiler)
     implementation(libs.glide)
     annotationProcessor(libs.glide.compiler)
+    implementation(files("libs/mdjlibrary.aar"))
 }
 
 kapt {

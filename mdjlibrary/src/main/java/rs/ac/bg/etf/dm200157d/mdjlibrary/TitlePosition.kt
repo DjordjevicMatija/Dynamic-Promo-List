@@ -1,4 +1,4 @@
-package rs.ac.bg.etf.dm200157d.dynamicpromolist.presentation.common
+package rs.ac.bg.etf.dm200157d.mdjlibrary
 
 enum class TitlePosition{
     TITLE_BELOW,

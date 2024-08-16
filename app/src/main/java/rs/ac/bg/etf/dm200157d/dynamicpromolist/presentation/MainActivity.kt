@@ -9,7 +9,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import dagger.hilt.android.AndroidEntryPoint
 import rs.ac.bg.etf.dm200157d.databinding.ActivityMainBinding
-import rs.ac.bg.etf.dm200157d.dynamicpromolist.presentation.util.MovieFocusListener
+import rs.ac.bg.etf.dm200157d.mdjlibrary.util.MovieFocusListener
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

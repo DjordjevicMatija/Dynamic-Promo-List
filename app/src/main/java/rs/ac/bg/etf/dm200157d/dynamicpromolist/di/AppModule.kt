@@ -73,8 +73,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideUseCase(
-        repository: Repository
+        repository: Repository,
+        @ApplicationContext context: Context
     ): UseCase {
-        return UseCaseImpl(repository)
+        return UseCaseImpl(repository, context)
     }
 }

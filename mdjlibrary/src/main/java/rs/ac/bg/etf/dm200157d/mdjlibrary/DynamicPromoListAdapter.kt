@@ -1,4 +1,4 @@
-package rs.ac.bg.etf.dm200157d.dynamicpromolist.presentation.common
+package rs.ac.bg.etf.dm200157d.mdjlibrary
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,13 +7,12 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
-import rs.ac.bg.etf.dm200157d.R
-import rs.ac.bg.etf.dm200157d.databinding.DynamicPromoListItemBinding
-import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.entities.Movie
-import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.entities.MovieList
-import rs.ac.bg.etf.dm200157d.dynamicpromolist.presentation.util.MovieFocusListener
-import rs.ac.bg.etf.dm200157d.dynamicpromolist.presentation.util.dpToPx
-import rs.ac.bg.etf.dm200157d.dynamicpromolist.presentation.util.loadImage
+import rs.ac.bg.etf.dm200157d.mdjlibrary.databinding.DynamicPromoListItemBinding
+import rs.ac.bg.etf.dm200157d.mdjlibrary.entities.Movie
+import rs.ac.bg.etf.dm200157d.mdjlibrary.entities.MovieList
+import rs.ac.bg.etf.dm200157d.mdjlibrary.util.MovieFocusListener
+import rs.ac.bg.etf.dm200157d.mdjlibrary.util.dpToPx
+import rs.ac.bg.etf.dm200157d.mdjlibrary.util.loadImage
 
 class DynamicPromoListAdapter(
     private val context: Context,
@@ -24,13 +23,7 @@ class DynamicPromoListAdapter(
     private var movies: MovieList = emptyList()
 ) : RecyclerView.Adapter<DynamicPromoListAdapter.ViewHolder>() {
 
-    private lateinit var baseImageUrl: String
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        if (!::baseImageUrl.isInitialized) {
-            baseImageUrl = parent.context.getString(R.string.base_image_url)
-        }
-
         val binding = DynamicPromoListItemBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
@@ -102,7 +95,7 @@ class DynamicPromoListAdapter(
                 ItemLayoutOrientation.VERTICAL -> movie.posterPath
             }
             binding.moviePoster.loadImage(
-                url = "$baseImageUrl$posterPath",
+                url = "$posterPath",
                 placeholder = R.drawable.placeholder,
                 error = R.drawable.poster_not_found
             )

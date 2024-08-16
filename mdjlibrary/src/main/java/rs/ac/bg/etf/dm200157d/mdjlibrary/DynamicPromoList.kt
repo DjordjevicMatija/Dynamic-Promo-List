@@ -1,13 +1,12 @@
-package rs.ac.bg.etf.dm200157d.dynamicpromolist.presentation.common
+package rs.ac.bg.etf.dm200157d.mdjlibrary
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import rs.ac.bg.etf.dm200157d.R
-import rs.ac.bg.etf.dm200157d.databinding.ViewDynamicPromoListBinding
-import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.entities.MovieList
-import rs.ac.bg.etf.dm200157d.dynamicpromolist.presentation.util.MovieFocusListener
+import rs.ac.bg.etf.dm200157d.mdjlibrary.databinding.ViewDynamicPromoListBinding
+import rs.ac.bg.etf.dm200157d.mdjlibrary.entities.MovieList
+import rs.ac.bg.etf.dm200157d.mdjlibrary.util.MovieFocusListener
 
 class DynamicPromoList @JvmOverloads constructor(
     context: Context,

@@ -8,8 +8,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.DataResult
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.UseCase
-import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.entities.MovieList
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.entities.Video
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.util.toLibMovie
+import rs.ac.bg.etf.dm200157d.mdjlibrary.entities.MovieList
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,7 +30,7 @@ class MainViewModel @Inject constructor(
     fun getMovies() {
         viewModelScope.launch {
             when (val result = useCase.getMovies()) {
-                is DataResult.Success -> _moviesLiveData.postValue(result.data)
+                is DataResult.Success -> _moviesLiveData.postValue(result.data.map { it.toLibMovie() })
                 is DataResult.Failure -> _errorLiveData.postValue(result.error)
             }
         }

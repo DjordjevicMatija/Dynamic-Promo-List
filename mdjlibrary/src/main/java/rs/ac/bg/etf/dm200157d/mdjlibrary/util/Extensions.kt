@@ -1,4 +1,4 @@
-package rs.ac.bg.etf.dm200157d.dynamicpromolist.presentation.util
+package rs.ac.bg.etf.dm200157d.mdjlibrary.util
 
 import android.content.Context
 import android.widget.ImageView
