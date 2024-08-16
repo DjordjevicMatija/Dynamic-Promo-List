@@ -17,6 +17,7 @@ class DynamicPromoList @JvmOverloads constructor(
 
     private var itemLayoutOrientation: ItemLayoutOrientation = ItemLayoutOrientation.VERTICAL
     private var titlePosition: TitlePosition = TitlePosition.TITLE_BELOW
+    private var circularList: Boolean = false
 
     private val binding: ViewDynamicPromoListBinding =
         ViewDynamicPromoListBinding.inflate(LayoutInflater.from(context), this, true)
@@ -39,6 +40,8 @@ class DynamicPromoList @JvmOverloads constructor(
 
                 val titlePositionInt = getInt(R.styleable.DynamicPromoList_titlePosition, 0)
                 titlePosition = TitlePosition.entries.toTypedArray()[titlePositionInt]
+
+                circularList = getBoolean(R.styleable.DynamicPromoList_circularList, false)
             } finally {
                 recycle()
             }
@@ -47,11 +50,28 @@ class DynamicPromoList @JvmOverloads constructor(
 
     fun addData(movies: MovieList) {
         adapter.updateMovies(movies)
+
+        if(circularList){
+            val middle = movies.size * DynamicPromoListAdapter.CIRCULAR_LIST_SCALE / 2
+            val middlePosition =
+                (middle) - ((middle) % movies.size)
+            binding.recyclerView.scrollToPosition(middlePosition)
+
+            binding.recyclerView.post {
+                binding.recyclerView.findViewHolderForAdapterPosition(middlePosition)?.itemView?.requestFocus()
+            }
+        }
     }
 
     fun addListener(listener: MovieFocusListener) {
         movieFocusListener = listener
-        adapter = DynamicPromoListAdapter(context, itemLayoutOrientation, titlePosition, movieFocusListener)
+        adapter = DynamicPromoListAdapter(
+            context,
+            itemLayoutOrientation,
+            titlePosition,
+            movieFocusListener,
+            circularList
+        )
         binding.recyclerView.adapter = adapter
     }
 }

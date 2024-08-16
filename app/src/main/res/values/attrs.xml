@@ -10,5 +10,6 @@
             <enum name="titleInvisible" value="1" />
             <enum name="titleInside" value="2" />
         </attr>
+        <attr name="circularList" format="boolean" />
     </declare-styleable>
 </resources>

@@ -20,6 +20,7 @@ class DynamicPromoListAdapter(
     private val itemLayoutOrientation: ItemLayoutOrientation,
     private val titlePosition: TitlePosition,
     private val movieFocusListener: MovieFocusListener,
+    private val circularList: Boolean = false,
     private var movies: MovieList = emptyList()
 ) : RecyclerView.Adapter<DynamicPromoListAdapter.ViewHolder>() {
 
@@ -30,18 +31,14 @@ class DynamicPromoListAdapter(
             baseImageUrl = parent.context.getString(R.string.base_image_url)
         }
 
-        return ViewHolder(DynamicPromoListItemBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false)
+        val binding = DynamicPromoListItemBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
         )
-    }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(movies[position])
+        val posterLayoutParams = binding.moviePoster.layoutParams as FrameLayout.LayoutParams
+        val titleLayoutParams = binding.movieTitle.layoutParams as RelativeLayout.LayoutParams
 
-        val titleLayoutParams = holder.binding.movieTitle.layoutParams as RelativeLayout.LayoutParams
-        val posterLayoutParams = holder.binding.moviePoster.layoutParams as FrameLayout.LayoutParams
-
-        when(itemLayoutOrientation){
+        when (itemLayoutOrientation) {
             ItemLayoutOrientation.HORIZONTAL -> {
                 posterLayoutParams.width = context.dpToPx(HORIZONTAL_WIDTH)
                 posterLayoutParams.height = context.dpToPx(HORIZONTAL_HEIGHT)
@@ -51,28 +48,42 @@ class DynamicPromoListAdapter(
                 posterLayoutParams.height = context.dpToPx(VERTICAL_HEIGHT)
             }
         }
+        binding.moviePoster.layoutParams = posterLayoutParams
 
         when (titlePosition) {
             TitlePosition.TITLE_BELOW -> {
-                holder.binding.movieTitle.visibility = View.VISIBLE
+                binding.movieTitle.visibility = View.VISIBLE
 
-                titleLayoutParams.addRule(RelativeLayout.BELOW, holder.binding.imageCardView.id)
-                holder.binding.movieTitle.layoutParams = titleLayoutParams
+                titleLayoutParams.addRule(RelativeLayout.BELOW, binding.imageCardView.id)
+                binding.movieTitle.layoutParams = titleLayoutParams
             }
+
             TitlePosition.TITLE_INVISIBLE -> {
-                holder.binding.movieTitle.visibility = View.GONE
+                binding.movieTitle.visibility = View.GONE
             }
-            TitlePosition.TITLE_INSIDE -> {
-                holder.binding.movieTitle.visibility = View.VISIBLE
 
-                titleLayoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, holder.binding.imageCardView.id)
-                holder.binding.movieTitle.layoutParams = titleLayoutParams
+            TitlePosition.TITLE_INSIDE -> {
+                binding.movieTitle.visibility = View.VISIBLE
+
+                titleLayoutParams.addRule(
+                    RelativeLayout.ALIGN_BOTTOM,
+                    binding.imageCardView.id
+                )
+                binding.movieTitle.layoutParams = titleLayoutParams
             }
         }
+        binding.movieTitle.layoutParams = titleLayoutParams
+
+        return ViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val actualPosition = position % movies.size
+        holder.bind(movies[actualPosition])
     }
 
     override fun getItemCount(): Int {
-        return movies.size
+        return if (circularList && movies.isNotEmpty()) movies.size * CIRCULAR_LIST_SCALE else movies.size
     }
 
     fun updateMovies(newMovies: MovieList) {
@@ -80,18 +91,15 @@ class DynamicPromoListAdapter(
         notifyDataSetChanged()
     }
 
-    inner class ViewHolder(val binding: DynamicPromoListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: DynamicPromoListItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: Movie) {
             binding.movieTitle.text = movie.title
 
-            val posterPath: String? = when(itemLayoutOrientation){
-                ItemLayoutOrientation.HORIZONTAL -> {
-                    movie.backdropPath
-                }
+            val posterPath: String? = when (itemLayoutOrientation) {
+                ItemLayoutOrientation.HORIZONTAL -> movie.backdropPath
 
-                ItemLayoutOrientation.VERTICAL -> {
-                    movie.posterPath
-                }
+                ItemLayoutOrientation.VERTICAL -> movie.posterPath
             }
             binding.moviePoster.loadImage(
                 url = "$baseImageUrl$posterPath",
@@ -100,16 +108,17 @@ class DynamicPromoListAdapter(
             )
 
             binding.moviePoster.setOnFocusChangeListener { _, hasFocus ->
-                if(hasFocus)
+                if (hasFocus)
                     movie.id?.let { movieFocusListener.onMovieFocused(it) }
             }
         }
     }
 
-    companion object{
+    companion object {
         const val HORIZONTAL_WIDTH = 220
         const val HORIZONTAL_HEIGHT = 124
         const val VERTICAL_WIDTH = 120
         const val VERTICAL_HEIGHT = 180
+        const val CIRCULAR_LIST_SCALE = 10
     }
 }
