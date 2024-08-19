@@ -16,10 +16,15 @@ import rs.ac.bg.etf.dm200157d.R
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.MovieApiService
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.MovieDataSource
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.MovieDataSourceImpl
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.VideoInfoApiService
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.VideoInfoDataSource
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.VideoInfoDataSourceImpl
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.repository.Repository
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.repository.RepositoryImpl
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.UseCase
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.UseCaseImpl
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.VideoInfoUseCase
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.VideoInfoUseCaseImpl
 import javax.inject.Singleton
 
 @Module
@@ -56,6 +61,26 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideVideoInfoApiService(@ApplicationContext context: Context): VideoInfoApiService {
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+
+        val client = OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl(context.getString(R.string.video_info_url))
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        return retrofit.create(VideoInfoApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideMovieDataSource(
         movieService: MovieApiService
     ): MovieDataSource {
@@ -64,10 +89,19 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideVideoInfoDataSource(
+        videoInfoService: VideoInfoApiService
+    ): VideoInfoDataSource {
+        return VideoInfoDataSourceImpl(videoInfoService)
+    }
+
+    @Provides
+    @Singleton
     fun provideRepository(
-        movieDataSource: MovieDataSource
+        movieDataSource: MovieDataSource,
+        videoInfoDataSource: VideoInfoDataSource
     ): Repository {
-        return RepositoryImpl(movieDataSource)
+        return RepositoryImpl(movieDataSource, videoInfoDataSource)
     }
 
     @Provides
@@ -77,5 +111,13 @@ object AppModule {
         @ApplicationContext context: Context
     ): UseCase {
         return UseCaseImpl(repository, context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideVideoInfoUseCase(
+        repository: Repository
+    ): VideoInfoUseCase {
+        return VideoInfoUseCaseImpl(repository)
     }
 }

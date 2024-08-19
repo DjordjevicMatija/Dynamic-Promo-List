@@ -1,9 +1,11 @@
 package rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.util
 
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.MovieResponse
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.VideoInfoResponse
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.VideoResponse
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.entities.MovieDTO
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.entities.Video
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.entities.VideoInfo
 import rs.ac.bg.etf.dm200157d.mdjlibrary.entities.Movie
 
 fun MovieResponse.toMovie(imagePath: String): MovieDTO {
@@ -33,5 +35,12 @@ fun MovieDTO.toLibMovie(): Movie{
         posterPath = posterPath,
         voteAverage = voteAverage,
         overview = overview
+    )
+}
+
+fun VideoInfoResponse.toVideoInfo(): VideoInfo {
+    return VideoInfo(
+        audioUrl = audioUrl,
+        videoUrl = videoUrl
     )
 }

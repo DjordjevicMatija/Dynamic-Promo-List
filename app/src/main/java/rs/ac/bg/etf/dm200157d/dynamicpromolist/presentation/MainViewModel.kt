@@ -8,14 +8,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.DataResult
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.UseCase
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.VideoInfoUseCase
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.entities.Video
+import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.entities.VideoInfo
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.util.toLibMovie
 import rs.ac.bg.etf.dm200157d.mdjlibrary.entities.MovieList
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val useCase: UseCase
+    private val useCase: UseCase,
+    private val videoInfoUseCase: VideoInfoUseCase
 ) : ViewModel() {
 
     private val _moviesLiveData = MutableLiveData<MovieList>()
@@ -26,6 +29,9 @@ class MainViewModel @Inject constructor(
 
     private val _videoLiveData = MutableLiveData<Video>()
     val videoLiveData: LiveData<Video> get() = _videoLiveData
+
+    private val _videoInfoLiveData = MutableLiveData<VideoInfo>()
+    val videoInfoLiveData: LiveData<VideoInfo> get() = _videoInfoLiveData
 
     fun getMovies() {
         viewModelScope.launch {
@@ -39,7 +45,19 @@ class MainViewModel @Inject constructor(
     fun getVideo(id: Int){
         viewModelScope.launch {
             when(val result = useCase.getVideo(id)){
-                is DataResult.Success -> _videoLiveData.postValue(result.data)
+                is DataResult.Success -> {
+                    _videoLiveData.postValue(result.data)
+                    result.data.key?.let { getVideoInfo(it) }
+                }
+                is DataResult.Failure -> _errorLiveData.postValue(result.error)
+            }
+        }
+    }
+
+    private fun getVideoInfo(key: String){
+        viewModelScope.launch {
+            when(val result = videoInfoUseCase.getVideoInfo(key)){
+                is DataResult.Success ->_videoInfoLiveData.postValue(result.data)
                 is DataResult.Failure -> _errorLiveData.postValue(result.error)
             }
         }

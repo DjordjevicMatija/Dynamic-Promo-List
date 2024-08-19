@@ -49,6 +49,10 @@ class MainActivity : AppCompatActivity() {
             Log.d("MainActivity", "Video: $video")
         }
 
+        mainViewModel.videoInfoLiveData.observe(this){videoInfo ->
+            Log.d("MainActivity", "VideoInfo: $videoInfo")
+        }
+
         mainViewModel.getMovies()
     }
 }
