@@ -36,6 +36,7 @@ class DynamicPromoListAdapter(
                 posterLayoutParams.width = context.dpToPx(HORIZONTAL_WIDTH)
                 posterLayoutParams.height = context.dpToPx(HORIZONTAL_HEIGHT)
             }
+
             ItemLayoutOrientation.VERTICAL -> {
                 posterLayoutParams.width = context.dpToPx(VERTICAL_WIDTH)
                 posterLayoutParams.height = context.dpToPx(VERTICAL_HEIGHT)
@@ -101,8 +102,7 @@ class DynamicPromoListAdapter(
             )
 
             binding.moviePoster.setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus)
-                    movie.id?.let { movieFocusListener.onMovieFocused(it) }
+                movie.id?.let { movieFocusListener.onMovieFocused(it, hasFocus) }
             }
         }
     }

@@ -16,6 +16,7 @@ okhttp3 = "4.12.0"
 kotlinx-serialization = "1.6.3"
 hilt = "2.52"
 glide = "4.15.1"
+exoplayer = "1.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -44,6 +45,9 @@ hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 glide = {group = "com.github.bumptech.glide", name = "glide", version.ref = "glide"}
 glide-compiler = {group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide"}
+media3-exoplayer = {group = "androidx.media3", name = "media3-exoplayer", version.ref = "exoplayer"}
+media3-ui = {group = "androidx.media3", name = "media3-ui", version.ref = "exoplayer"}
+media3-exoplayer-hls = {group = "androidx.media3", name = "media3-exoplayer-hls", version.ref = "exoplayer"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

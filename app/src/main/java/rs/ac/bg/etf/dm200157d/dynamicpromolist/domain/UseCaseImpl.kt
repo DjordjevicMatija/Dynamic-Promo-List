@@ -22,9 +22,9 @@ class UseCaseImpl @Inject constructor(
 
     override suspend fun getVideo(id: Int): DataResult<Video> {
         return repository.getVideos(id).toDataResult { videoListResponse ->
-            videoListResponse.results.first {
+            videoListResponse.results.find {
                 it.site == "YouTube" && it.type == "Trailer"
-            }.toVideo()
+            }?.toVideo()?:Video(null, null, null)
         }
     }
 }

@@ -3,6 +3,7 @@ package rs.ac.bg.etf.dm200157d.mdjlibrary
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.FrameLayout
 import rs.ac.bg.etf.dm200157d.mdjlibrary.databinding.ViewDynamicPromoListBinding
 import rs.ac.bg.etf.dm200157d.mdjlibrary.entities.MovieList
@@ -19,7 +20,7 @@ class DynamicPromoList @JvmOverloads constructor(
     private var circularList: Boolean = false
 
     private val binding: ViewDynamicPromoListBinding =
-        ViewDynamicPromoListBinding.inflate(LayoutInflater.from(context), this, true)
+        ViewDynamicPromoListBinding.inflate(LayoutInflater.from(context), this)
 
     private lateinit var movieFocusListener: MovieFocusListener
 
@@ -72,5 +73,9 @@ class DynamicPromoList @JvmOverloads constructor(
             circularList
         )
         binding.recyclerView.adapter = adapter
+    }
+
+    fun setPlayerView(playerView: View){
+        binding.playerView.addView(playerView)
     }
 }
