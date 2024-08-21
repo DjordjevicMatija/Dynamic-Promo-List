@@ -107,6 +107,10 @@ class DynamicPromoListAdapter(
         }
     }
 
+    fun findListIndexFromId(movieId: Int?): Int {
+        return movies.indexOfFirst { it.id == movieId }
+    }
+
     companion object {
         const val HORIZONTAL_WIDTH = 220
         const val HORIZONTAL_HEIGHT = 124

@@ -10,6 +10,7 @@ import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.setPadding
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MimeTypes
 import androidx.media3.common.util.UnstableApi
@@ -28,6 +29,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import rs.ac.bg.etf.dm200157d.databinding.ActivityMainBinding
+import rs.ac.bg.etf.dm200157d.mdjlibrary.R
 import rs.ac.bg.etf.dm200157d.mdjlibrary.util.MovieFocusListener
 import rs.ac.bg.etf.dm200157d.mdjlibrary.util.dpToPx
 
@@ -59,6 +61,8 @@ class MainActivity : AppCompatActivity() {
                 focusJob?.cancel()
 
                 if (hasFocus) {
+                    binding.dynamicPromoList.scrollToFocusedItem(movieId)
+
                     focusJob = CoroutineScope(Dispatchers.IO).launch {
                         delay(1000)
                         mainViewModel.getVideo(movieId)
@@ -128,6 +132,9 @@ class MainActivity : AppCompatActivity() {
             controllerShowTimeoutMs = 5000
             useController = false
             visibility = View.GONE
+
+            setBackgroundResource(R.drawable.highlighted_border)
+            setPadding(context.dpToPx(5))
         }
         playerView.player = player
     }

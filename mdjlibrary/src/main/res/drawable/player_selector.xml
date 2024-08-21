@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true"
-        android:drawable="@color/highlighted_border_color" />
+        android:drawable="@drawable/highlighted_border" />
     <item android:drawable="@drawable/default_border" />
 </selector>

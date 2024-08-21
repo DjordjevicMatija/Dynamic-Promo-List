@@ -5,9 +5,13 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import rs.ac.bg.etf.dm200157d.mdjlibrary.databinding.ViewDynamicPromoListBinding
 import rs.ac.bg.etf.dm200157d.mdjlibrary.entities.MovieList
 import rs.ac.bg.etf.dm200157d.mdjlibrary.util.MovieFocusListener
+
 
 class DynamicPromoList @JvmOverloads constructor(
     context: Context,
@@ -25,6 +29,7 @@ class DynamicPromoList @JvmOverloads constructor(
     private lateinit var movieFocusListener: MovieFocusListener
 
     private lateinit var adapter: DynamicPromoListAdapter
+    private lateinit var smoothScroller: SmoothScroller
 
     init {
         context.theme.obtainStyledAttributes(
@@ -51,7 +56,7 @@ class DynamicPromoList @JvmOverloads constructor(
     fun addData(movies: MovieList) {
         adapter.updateMovies(movies)
 
-        if(circularList){
+        if (circularList) {
             val middle = movies.size * DynamicPromoListAdapter.CIRCULAR_LIST_SCALE / 2
             val middlePosition =
                 (middle) - ((middle) % movies.size)
@@ -75,7 +80,23 @@ class DynamicPromoList @JvmOverloads constructor(
         binding.recyclerView.adapter = adapter
     }
 
-    fun setPlayerView(playerView: View){
+    fun setPlayerView(playerView: View) {
         binding.playerView.addView(playerView)
+    }
+
+    fun scrollToFocusedItem(movieId: Int?) {
+        movieId?.let {
+            adapter.let {
+                val position = it.findListIndexFromId(movieId)
+                smoothScroller = object : LinearSmoothScroller(context) {
+                    override fun getHorizontalSnapPreference(): Int {
+                        return SNAP_TO_START
+                    }
+                }
+                smoothScroller.targetPosition = position
+                binding.recyclerView.layoutManager?.startSmoothScroll(smoothScroller)
+                binding.recyclerView.findViewHolderForAdapterPosition(position)?.itemView?.requestFocus()
+            }
+        }
     }
 }

@@ -87,7 +87,7 @@ dependencies {
     kapt(libs.hilt.compiler)
     implementation(libs.glide)
     annotationProcessor(libs.glide.compiler)
-    implementation(files("libs/mdjlibrary.aar"))
+    implementation(files("libs/mdjlibrary-release.aar"))
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.ui)
     implementation(libs.media3.exoplayer.hls)
