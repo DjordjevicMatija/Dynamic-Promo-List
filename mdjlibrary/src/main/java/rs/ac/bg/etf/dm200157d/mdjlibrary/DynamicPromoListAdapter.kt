@@ -1,6 +1,7 @@
 package rs.ac.bg.etf.dm200157d.mdjlibrary
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,13 +34,13 @@ class DynamicPromoListAdapter(
 
         when (itemLayoutOrientation) {
             ItemLayoutOrientation.HORIZONTAL -> {
-                posterLayoutParams.width = context.dpToPx(HORIZONTAL_WIDTH)
-                posterLayoutParams.height = context.dpToPx(HORIZONTAL_HEIGHT)
+                posterLayoutParams.width = context.dpToPx(DynamicPromoList.HORIZONTAL_WIDTH)
+                posterLayoutParams.height = context.dpToPx(DynamicPromoList.HORIZONTAL_HEIGHT)
             }
 
             ItemLayoutOrientation.VERTICAL -> {
-                posterLayoutParams.width = context.dpToPx(VERTICAL_WIDTH)
-                posterLayoutParams.height = context.dpToPx(VERTICAL_HEIGHT)
+                posterLayoutParams.width = context.dpToPx(DynamicPromoList.VERTICAL_WIDTH)
+                posterLayoutParams.height = context.dpToPx(DynamicPromoList.VERTICAL_HEIGHT)
             }
         }
         binding.moviePoster.layoutParams = posterLayoutParams
@@ -77,7 +78,7 @@ class DynamicPromoListAdapter(
     }
 
     override fun getItemCount(): Int {
-        return if (circularList && movies.isNotEmpty()) movies.size * CIRCULAR_LIST_SCALE else movies.size
+        return if (circularList && movies.isNotEmpty()) movies.size * DynamicPromoList.CIRCULAR_LIST_SCALE else movies.size
     }
 
     fun updateMovies(newMovies: MovieList) {
@@ -102,20 +103,19 @@ class DynamicPromoListAdapter(
             )
 
             binding.moviePoster.setOnFocusChangeListener { _, hasFocus ->
-                movie.id?.let { movieFocusListener.onMovieFocused(it, hasFocus) }
+                if (!hasFocus) {
+                    binding.moviePoster.alpha = 1f
+                }
+                movie.id?.let {
+                    movieFocusListener.onMovieFocused(it, hasFocus) {
+                        binding.moviePoster.alpha = if (hasFocus) 0f else 1f
+                    }
+                }
             }
         }
     }
 
     fun findListIndexFromId(movieId: Int?): Int {
         return movies.indexOfFirst { it.id == movieId }
-    }
-
-    companion object {
-        const val HORIZONTAL_WIDTH = 220
-        const val HORIZONTAL_HEIGHT = 124
-        const val VERTICAL_WIDTH = 120
-        const val VERTICAL_HEIGHT = 180
-        const val CIRCULAR_LIST_SCALE = 10
     }
 }

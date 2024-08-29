@@ -57,15 +57,14 @@ class MainActivity : AppCompatActivity() {
         binding.dynamicPromoList.addListener(object : MovieFocusListener {
             private var focusJob: Job? = null
 
-            override fun onMovieFocused(movieId: Int, hasFocus: Boolean) {
+            override fun onMovieFocused(movieId: Int, hasFocus: Boolean, onSuccess: () -> Unit) {
                 focusJob?.cancel()
-
                 if (hasFocus) {
                     binding.dynamicPromoList.scrollToFocusedItem(movieId)
 
                     focusJob = CoroutineScope(Dispatchers.IO).launch {
                         delay(1000)
-                        mainViewModel.getVideo(movieId)
+                        mainViewModel.getVideo(movieId, onSuccess)
                     }
                 } else {
                     playerView.visibility = View.INVISIBLE

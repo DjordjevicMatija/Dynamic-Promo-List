@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.DataResult
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.UseCase
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.VideoInfoUseCase
@@ -17,8 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val useCase: UseCase,
-    private val videoInfoUseCase: VideoInfoUseCase
+    private val useCase: UseCase, private val videoInfoUseCase: VideoInfoUseCase
 ) : ViewModel() {
 
     private val _moviesLiveData = MutableLiveData<MovieList>()
@@ -42,22 +43,28 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getVideo(id: Int){
+    fun getVideo(id: Int, onSuccess: () -> Unit) {
         viewModelScope.launch {
-            when(val result = useCase.getVideo(id)){
+            when (val result = useCase.getVideo(id)) {
                 is DataResult.Success -> {
                     _videoLiveData.postValue(result.data)
-                    result.data.key?.let { getVideoInfo(it) }
+                    result.data.key?.let { getVideoInfo(it, onSuccess) }
                 }
+
                 is DataResult.Failure -> _errorLiveData.postValue(result.error)
             }
         }
     }
 
-    private fun getVideoInfo(key: String){
+    private fun getVideoInfo(key: String, onSuccess: () -> Unit) {
         viewModelScope.launch {
-            when(val result = videoInfoUseCase.getVideoInfo(key)){
-                is DataResult.Success ->_videoInfoLiveData.postValue(result.data)
+            when (val result = videoInfoUseCase.getVideoInfo(key)) {
+                is DataResult.Success -> {
+                    _videoInfoLiveData.postValue(result.data)
+                    withContext(Dispatchers.Main) {
+                        onSuccess()
+                    }
+                }
                 is DataResult.Failure -> _errorLiveData.postValue(result.error)
             }
         }
