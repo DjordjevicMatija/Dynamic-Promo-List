@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_layout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -30,11 +31,15 @@
     <TextView
         android:id="@+id/movie_title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_alignStart="@id/image_card_view"
         android:layout_alignEnd="@+id/image_card_view"
-        android:layout_margin="20dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:ellipsize="end"
         android:gravity="center"
+        android:maxLines="2"
         android:text="@string/title" />
 
 </RelativeLayout>

@@ -16,6 +16,7 @@ import rs.ac.bg.etf.dm200157d.mdjlibrary.util.dpToPx
 import rs.ac.bg.etf.dm200157d.mdjlibrary.util.loadImage
 
 class DynamicPromoListAdapter(
+    private val dynamicPromoList: DynamicPromoList,
     private val context: Context,
     private val itemLayoutOrientation: ItemLayoutOrientation,
     private val titlePosition: TitlePosition,
@@ -104,11 +105,15 @@ class DynamicPromoListAdapter(
 
             binding.moviePoster.setOnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {
-                    binding.moviePoster.alpha = 1f
+                    dynamicPromoList.collapsePlayerView()
+                    binding.movieTitle.visibility = View.VISIBLE
                 }
                 movie.id?.let {
                     movieFocusListener.onMovieFocused(it, hasFocus) {
-                        binding.moviePoster.alpha = if (hasFocus) 0f else 1f
+                        if(hasFocus){
+                            dynamicPromoList.expandPlayerView()
+                            binding.movieTitle.visibility = View.INVISIBLE
+                        }
                     }
                 }
             }

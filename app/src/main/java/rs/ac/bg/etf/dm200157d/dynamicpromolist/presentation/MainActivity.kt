@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                         mainViewModel.getVideo(movieId, onSuccess)
                     }
                 } else {
-                    playerView.visibility = View.INVISIBLE
+//                    playerView.visibility = View.INVISIBLE
                     player.stop()
                     player.clearMediaItems()
                 }
@@ -166,6 +166,6 @@ class MainActivity : AppCompatActivity() {
 
         player.prepare()
         player.playWhenReady = true
-        playerView.visibility = View.VISIBLE
+//        playerView.visibility = View.VISIBLE
     }
 }
