@@ -87,7 +87,7 @@ class DynamicPromoListAdapter(
         notifyDataSetChanged()
     }
 
-    inner class ViewHolder(val binding: DynamicPromoListItemBinding) :
+    inner class ViewHolder(private val binding: DynamicPromoListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: Movie) {
             binding.movieTitle.text = movie.title
@@ -104,15 +104,13 @@ class DynamicPromoListAdapter(
             )
 
             binding.moviePoster.setOnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    dynamicPromoList.collapsePlayerView()
-                    binding.movieTitle.visibility = View.VISIBLE
+                if(!hasFocus){
+                    dynamicPromoList.animatePlayerViewCollapse()
                 }
                 movie.id?.let {
                     movieFocusListener.onMovieFocused(it, hasFocus) {
-                        if(hasFocus){
-                            dynamicPromoList.expandPlayerView()
-                            binding.movieTitle.visibility = View.INVISIBLE
+                        if (hasFocus) {
+                            dynamicPromoList.animateItemTransition()
                         }
                     }
                 }
@@ -120,7 +118,19 @@ class DynamicPromoListAdapter(
         }
     }
 
-    fun findListIndexFromId(movieId: Int?): Int {
-        return movies.indexOfFirst { it.id == movieId }
+    fun findListIndicesFromId(movieId: Int?): List<Int> {
+        val originalPositions = movies.mapIndexedNotNull { index, movie ->
+            if (movie.id == movieId) index else null
+        }
+
+        return if (circularList && originalPositions.isNotEmpty()) {
+            originalPositions.flatMap { originalIndex ->
+                (0 until DynamicPromoList.CIRCULAR_LIST_SCALE).map { scaleFactor ->
+                    originalIndex + (movies.size * scaleFactor)
+                }
+            }
+        } else {
+            originalPositions
+        }
     }
 }
