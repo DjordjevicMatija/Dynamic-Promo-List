@@ -13,7 +13,6 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
-import androidx.core.view.setPadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -49,9 +48,6 @@ class DynamicPromoList @JvmOverloads constructor(
     private lateinit var adapter: DynamicPromoListAdapter
     private lateinit var smoothScroller: SmoothScroller
     private var scrollJob: Job? = null
-
-    private lateinit var player: View
-    private var isPlayerExpanded = false
 
     private lateinit var currentItemView: View
     private lateinit var previousItemView: View
@@ -133,11 +129,8 @@ class DynamicPromoList @JvmOverloads constructor(
             context.dpToPx(PLAYER_WIDTH),
             context.dpToPx(PLAYER_HEIGHT)
         )
-        playerView.setBackgroundResource(R.drawable.highlighted_border)
-        playerView.setPadding(context.dpToPx(5))
-        playerView.visibility = View.GONE
-        player = playerView
         binding.playerView.addView(playerView, playerViewLayoutParams)
+        binding.playerView.visibility = View.INVISIBLE
     }
 
     fun scrollToFocusedItem(movieId: Int?) {
@@ -226,7 +219,7 @@ class DynamicPromoList @JvmOverloads constructor(
             val previousItemBinding = DynamicPromoListItemBinding.bind(previousItemView)
 
             previousItemBinding.moviePoster.alpha = 1f
-            player.visibility = View.INVISIBLE
+            binding.playerView.visibility = View.INVISIBLE
             previousItemBinding.movieTitle.visibility = View.VISIBLE
 
             val collapsedWidth =
@@ -355,7 +348,7 @@ class DynamicPromoList @JvmOverloads constructor(
                         adjustRecyclerViewScroll(viewRect) {
                             adjustPlayerView(currentItemView)
 
-                            player.visibility = View.VISIBLE
+                            binding.playerView.visibility = View.VISIBLE
                             currentItemBinding.moviePoster.alpha = 0f
 
                             isAnimationRunning = false
@@ -367,7 +360,7 @@ class DynamicPromoList @JvmOverloads constructor(
             override fun onAnimationCancel(animation: Animator) {
                 super.onAnimationCancel(animation)
 
-                player.visibility = View.INVISIBLE
+                binding.playerView.visibility = View.INVISIBLE
                 currentItemBinding.moviePoster.alpha = 1f
                 currentItemBinding.movieTitle.visibility = View.VISIBLE
 
@@ -427,7 +420,7 @@ class DynamicPromoList @JvmOverloads constructor(
         val itemBinding = DynamicPromoListItemBinding.bind(currentItemView)
 
         itemBinding.moviePoster.alpha = 1f
-        player.visibility = View.INVISIBLE
+        binding.playerView.visibility = View.INVISIBLE
         itemBinding.movieTitle.visibility = View.VISIBLE
 
         val collapsedWidth =

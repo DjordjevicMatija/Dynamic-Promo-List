@@ -10,6 +10,7 @@
         android:layout_margin="20dp"
         android:focusable="false"
         android:focusableInTouchMode="false"
+        android:foreground="@drawable/highlighted_border"
         app:cardBackgroundColor="@android:color/transparent"
         app:cardCornerRadius="15dp"
         app:cardElevation="0dp" />
@@ -23,8 +24,8 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:orientation="horizontal"
-        android:paddingVertical="40dp"
         android:paddingHorizontal="20dp"
+        android:paddingVertical="40dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 </merge>
