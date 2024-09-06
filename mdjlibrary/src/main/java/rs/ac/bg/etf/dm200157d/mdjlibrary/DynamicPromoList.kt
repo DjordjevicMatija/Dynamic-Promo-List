@@ -8,19 +8,19 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
+import androidx.core.view.setPadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import rs.ac.bg.etf.dm200157d.mdjlibrary.databinding.DynamicPromoListItemBinding
 import rs.ac.bg.etf.dm200157d.mdjlibrary.databinding.ViewDynamicPromoListBinding
@@ -133,6 +133,9 @@ class DynamicPromoList @JvmOverloads constructor(
             context.dpToPx(PLAYER_WIDTH),
             context.dpToPx(PLAYER_HEIGHT)
         )
+        playerView.setBackgroundResource(R.drawable.highlighted_border)
+        playerView.setPadding(context.dpToPx(5))
+        playerView.visibility = View.GONE
         player = playerView
         binding.playerView.addView(playerView, playerViewLayoutParams)
     }
@@ -348,15 +351,15 @@ class DynamicPromoList @JvmOverloads constructor(
                     scrollJob = CoroutineScope(Dispatchers.Main).launch {
                         val viewRect = Rect()
                         currentItemView.getHitRect(viewRect)
-                        adjustRecyclerViewScroll(viewRect)
 
-                        delay(200)
-                        adjustPlayerView(currentItemView)
+                        adjustRecyclerViewScroll(viewRect) {
+                            adjustPlayerView(currentItemView)
 
-                        player.visibility = View.VISIBLE
-                        currentItemBinding.moviePoster.alpha = 0f
+                            player.visibility = View.VISIBLE
+                            currentItemBinding.moviePoster.alpha = 0f
 
-                        isAnimationRunning = false
+                            isAnimationRunning = false
+                        }
                     }
                 }
             }
@@ -379,7 +382,7 @@ class DynamicPromoList @JvmOverloads constructor(
         currentItemBinding.movieTitle.visibility = View.INVISIBLE
     }
 
-    private fun adjustRecyclerViewScroll(viewRect: Rect) {
+    private fun adjustRecyclerViewScroll(viewRect: Rect, onScrollEnd: () -> Unit) {
         binding.recyclerView.post {
             val recyclerRect = Rect()
             binding.recyclerView.getHitRect(recyclerRect)
@@ -389,7 +392,19 @@ class DynamicPromoList @JvmOverloads constructor(
                     viewRect.left < recyclerRect.left -> viewRect.left - recyclerRect.left
                     else -> 0
                 }
+
+                binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                            recyclerView.removeOnScrollListener(this)
+                            onScrollEnd()
+                        }
+                    }
+                })
+
                 binding.recyclerView.smoothScrollBy(dx, 0)
+            } else {
+                onScrollEnd()
             }
         }
     }

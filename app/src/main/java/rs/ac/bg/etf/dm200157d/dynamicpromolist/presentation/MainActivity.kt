@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
                     binding.dynamicPromoList.scrollToFocusedItem(movieId)
 
                     focusJob = CoroutineScope(Dispatchers.IO).launch {
-                        delay(1000)
+                        delay(500)
                         mainViewModel.getVideo(movieId, onSuccess)
                     }
                 } else {
@@ -129,10 +129,6 @@ class MainActivity : AppCompatActivity() {
             setShowBuffering(PlayerView.SHOW_BUFFERING_NEVER)
             controllerShowTimeoutMs = 5000
             useController = false
-            visibility = View.GONE
-
-            setBackgroundResource(R.drawable.highlighted_border)
-            setPadding(context.dpToPx(5))
         }
         playerView.player = player
     }
