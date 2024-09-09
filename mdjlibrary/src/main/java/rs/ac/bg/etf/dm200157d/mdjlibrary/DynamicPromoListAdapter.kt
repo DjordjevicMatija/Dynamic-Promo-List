@@ -110,7 +110,7 @@ class DynamicPromoListAdapter(
                 movie.id?.let {
                     movieFocusListener.onMovieFocused(it, hasFocus) {
                         if (hasFocus) {
-                            dynamicPromoList.animateItemTransition()
+                            dynamicPromoList.animateItemTransition(it)
                         }
                     }
                 }

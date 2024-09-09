@@ -8,6 +8,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
@@ -17,9 +18,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import rs.ac.bg.etf.dm200157d.mdjlibrary.databinding.DynamicPromoListItemBinding
 import rs.ac.bg.etf.dm200157d.mdjlibrary.databinding.ViewDynamicPromoListBinding
@@ -52,10 +55,12 @@ class DynamicPromoList @JvmOverloads constructor(
     private lateinit var currentItemView: View
     private lateinit var previousItemView: View
     private var currentPosition: Int = 0
+    private var currentMovieId: Int = 0
 
     private var currentAnimatorSet: AnimatorSet? = null
     private var isAnimationCancelled = false
-    private var isAnimationRunning = false
+
+    private var collapsing:Boolean = false
 
     init {
         context.theme.obtainStyledAttributes(
@@ -81,6 +86,10 @@ class DynamicPromoList @JvmOverloads constructor(
 
     fun addData(movies: MovieList) {
         adapter.updateMovies(movies)
+
+        movies[0].id?.let {
+            currentMovieId = it
+        }
 
         if (circularList) {
             val middle = movies.size * CIRCULAR_LIST_SCALE / 2
@@ -135,6 +144,7 @@ class DynamicPromoList @JvmOverloads constructor(
 
     fun scrollToFocusedItem(movieId: Int?) {
         movieId?.let {
+            currentMovieId = movieId
             val positions = adapter.findListIndicesFromId(movieId)
 
             if (positions.isNotEmpty()) {
@@ -163,6 +173,7 @@ class DynamicPromoList @JvmOverloads constructor(
     }
 
     private fun adjustPlayerView(focusedView: View) {
+        Log.d("Animation", "Adjust player")
         val itemBinding = DynamicPromoListItemBinding.bind(focusedView)
 
         val playerView: View = binding.playerView
@@ -198,29 +209,26 @@ class DynamicPromoList @JvmOverloads constructor(
         playerView.requestLayout()
     }
 
-    fun animateItemTransition() {
+    fun animateItemTransition(movieId: Int) {
 
-        if (!::currentItemView.isInitialized) {
+        if (!::currentItemView.isInitialized || currentMovieId != movieId) {
             return
         }
 
-        currentAnimatorSet?.let {
-            if (isAnimationRunning) {
-                isAnimationCancelled = true
-                it.cancel()
-                scrollJob?.cancel()
-            }
-        }
+        isAnimationCancelled = true
+        currentAnimatorSet?.cancel()
+        scrollJob?.cancel()
         isAnimationCancelled = false
 
         val animatorSet = AnimatorSet()
 
-        if (::previousItemView.isInitialized && previousItemView != currentItemView) {
+        if (::previousItemView.isInitialized) {
             val previousItemBinding = DynamicPromoListItemBinding.bind(previousItemView)
 
             previousItemBinding.moviePoster.alpha = 1f
-            binding.playerView.visibility = View.INVISIBLE
-            previousItemBinding.movieTitle.visibility = View.VISIBLE
+            if (titlePosition != TitlePosition.TITLE_INVISIBLE) {
+                previousItemBinding.movieTitle.visibility = View.VISIBLE
+            }
 
             val collapsedWidth =
                 if (itemLayoutOrientation == ItemLayoutOrientation.HORIZONTAL) context.dpToPx(
@@ -232,12 +240,12 @@ class DynamicPromoList @JvmOverloads constructor(
                 ) else context.dpToPx(VERTICAL_HEIGHT)
 
             val previousMoviePoster = previousItemBinding.moviePoster
-            val previousItemView = previousItemBinding.itemLayout
+            val previousItem = previousItemBinding.itemLayout
 
             val previousExpandedHeight = previousMoviePoster.height
-            val previousTopMargin = (previousItemView.layoutParams as MarginLayoutParams).topMargin
+            val previousTopMargin = (previousItem.layoutParams as MarginLayoutParams).topMargin
             val previousBottomMargin =
-                (previousItemView.layoutParams as MarginLayoutParams).bottomMargin
+                (previousItem.layoutParams as MarginLayoutParams).bottomMargin
             val previousAdditionalHeight = (previousExpandedHeight - collapsedHeight) / 2
 
             val previousPosterWidthAnimator =
@@ -258,9 +266,9 @@ class DynamicPromoList @JvmOverloads constructor(
             val previousTopMarginAnimator =
                 ValueAnimator.ofInt(previousTopMargin, previousTopMargin + previousAdditionalHeight)
             previousTopMarginAnimator.addUpdateListener { animator ->
-                val params = previousItemView.layoutParams as MarginLayoutParams
+                val params = previousItem.layoutParams as MarginLayoutParams
                 params.topMargin = animator.animatedValue as Int
-                previousItemView.layoutParams = params
+                previousItem.layoutParams = params
             }
 
             val previousBottomMarginAnimator =
@@ -269,9 +277,9 @@ class DynamicPromoList @JvmOverloads constructor(
                     previousBottomMargin + previousAdditionalHeight
                 )
             previousBottomMarginAnimator.addUpdateListener { animator ->
-                val params = previousItemView.layoutParams as MarginLayoutParams
+                val params = previousItem.layoutParams as MarginLayoutParams
                 params.bottomMargin = animator.animatedValue as Int
-                previousItemView.layoutParams = params
+                previousItem.layoutParams = params
             }
 
             animatorSet.playTogether(
@@ -340,18 +348,18 @@ class DynamicPromoList @JvmOverloads constructor(
                 if (!isAnimationCancelled) {
                     super.onAnimationEnd(animation)
 
+                    val viewRect = Rect()
+                    currentItemView.getHitRect(viewRect)
+
                     scrollJob?.cancel()
                     scrollJob = CoroutineScope(Dispatchers.Main).launch {
-                        val viewRect = Rect()
-                        currentItemView.getHitRect(viewRect)
-
                         adjustRecyclerViewScroll(viewRect) {
                             adjustPlayerView(currentItemView)
 
-                            binding.playerView.visibility = View.VISIBLE
-                            currentItemBinding.moviePoster.alpha = 0f
-
-                            isAnimationRunning = false
+                            if (!collapsing) {
+                                binding.playerView.visibility = View.VISIBLE
+                                currentItemBinding.moviePoster.alpha = 0f
+                            }
                         }
                     }
                 }
@@ -362,34 +370,37 @@ class DynamicPromoList @JvmOverloads constructor(
 
                 binding.playerView.visibility = View.INVISIBLE
                 currentItemBinding.moviePoster.alpha = 1f
-                currentItemBinding.movieTitle.visibility = View.VISIBLE
-
-                isAnimationRunning = false
+                if (titlePosition != TitlePosition.TITLE_INVISIBLE) {
+                    currentItemBinding.movieTitle.visibility = View.VISIBLE
+                }
             }
 
         })
 
         currentAnimatorSet = animatorSet
-        isAnimationRunning = true
         animatorSet.start()
-        currentItemBinding.movieTitle.visibility = View.INVISIBLE
+        if (titlePosition != TitlePosition.TITLE_INVISIBLE) {
+            currentItemBinding.movieTitle.visibility = View.INVISIBLE
+        }
     }
 
     private fun adjustRecyclerViewScroll(viewRect: Rect, onScrollEnd: () -> Unit) {
         binding.recyclerView.post {
+            Log.d("Animation", "Adjust scroll")
             val recyclerRect = Rect()
             binding.recyclerView.getHitRect(recyclerRect)
-            if (!recyclerRect.contains(viewRect)) {
-                val dx = when {
-                    viewRect.right > recyclerRect.right -> viewRect.right - recyclerRect.right + 100
-                    viewRect.left < recyclerRect.left -> viewRect.left - recyclerRect.left
-                    else -> 0
-                }
+            val dx = when {
+                viewRect.right > recyclerRect.right -> viewRect.right - recyclerRect.right + 100
+                viewRect.left < recyclerRect.left -> viewRect.left - recyclerRect.left
+                else -> 0
+            }
 
+            if (dx != 0) {
                 binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                         if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                             recyclerView.removeOnScrollListener(this)
+                            Log.d("Animation", "Adjust scroll ended")
                             onScrollEnd()
                         }
                     }
@@ -408,20 +419,7 @@ class DynamicPromoList @JvmOverloads constructor(
             return
         }
 
-        currentAnimatorSet?.let {
-            if (isAnimationRunning) {
-                isAnimationCancelled = true
-                it.cancel()
-                scrollJob?.cancel()
-            }
-        }
-        isAnimationCancelled = false
-
         val itemBinding = DynamicPromoListItemBinding.bind(currentItemView)
-
-        itemBinding.moviePoster.alpha = 1f
-        binding.playerView.visibility = View.INVISIBLE
-        itemBinding.movieTitle.visibility = View.VISIBLE
 
         val collapsedWidth =
             if (itemLayoutOrientation == ItemLayoutOrientation.HORIZONTAL) context.dpToPx(
@@ -470,7 +468,29 @@ class DynamicPromoList @JvmOverloads constructor(
         )
         animatorSet.duration = 300
         animatorSet.interpolator = AccelerateDecelerateInterpolator()
+        Log.d("Animate", "Animation started")
 
+        animatorSet.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                collapsing = false
+            }
+        })
+
+
+        isAnimationCancelled = true
+        currentAnimatorSet?.cancel()
+        scrollJob?.cancel()
+        Log.d("Animate", "$currentItemView")
+        Log.d("Animate", "$itemBinding")
+
+        itemBinding.moviePoster.alpha = 1f
+        binding.playerView.visibility = View.INVISIBLE
+        if (titlePosition != TitlePosition.TITLE_INVISIBLE) {
+            itemBinding.movieTitle.visibility = View.VISIBLE
+        }
+
+        collapsing = true
         animatorSet.start()
     }
 
