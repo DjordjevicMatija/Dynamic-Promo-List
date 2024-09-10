@@ -34,6 +34,9 @@ class MainViewModel @Inject constructor(
     private val _videoInfoLiveData = MutableLiveData<VideoInfo>()
     val videoInfoLiveData: LiveData<VideoInfo> get() = _videoInfoLiveData
 
+    var lastApiMovieId: Int = 0
+    var lastSuccessApiMovieId: Int = 0
+
     fun getMovies() {
         viewModelScope.launch {
             when (val result = useCase.getMovies()) {
@@ -47,6 +50,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = useCase.getVideo(id)) {
                 is DataResult.Success -> {
+                    lastSuccessApiMovieId = id
                     _videoLiveData.postValue(result.data)
                     result.data.key?.let { getVideoInfo(it, onSuccess) }
                 }

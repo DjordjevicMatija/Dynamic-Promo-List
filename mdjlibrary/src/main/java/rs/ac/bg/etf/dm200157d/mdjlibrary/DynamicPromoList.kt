@@ -8,7 +8,6 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
@@ -18,11 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import rs.ac.bg.etf.dm200157d.mdjlibrary.databinding.DynamicPromoListItemBinding
 import rs.ac.bg.etf.dm200157d.mdjlibrary.databinding.ViewDynamicPromoListBinding
@@ -173,7 +170,6 @@ class DynamicPromoList @JvmOverloads constructor(
     }
 
     private fun adjustPlayerView(focusedView: View) {
-        Log.d("Animation", "Adjust player")
         val itemBinding = DynamicPromoListItemBinding.bind(focusedView)
 
         val playerView: View = binding.playerView
@@ -386,7 +382,6 @@ class DynamicPromoList @JvmOverloads constructor(
 
     private fun adjustRecyclerViewScroll(viewRect: Rect, onScrollEnd: () -> Unit) {
         binding.recyclerView.post {
-            Log.d("Animation", "Adjust scroll")
             val recyclerRect = Rect()
             binding.recyclerView.getHitRect(recyclerRect)
             val dx = when {
@@ -400,7 +395,6 @@ class DynamicPromoList @JvmOverloads constructor(
                     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                         if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                             recyclerView.removeOnScrollListener(this)
-                            Log.d("Animation", "Adjust scroll ended")
                             onScrollEnd()
                         }
                     }
@@ -468,7 +462,6 @@ class DynamicPromoList @JvmOverloads constructor(
         )
         animatorSet.duration = 300
         animatorSet.interpolator = AccelerateDecelerateInterpolator()
-        Log.d("Animate", "Animation started")
 
         animatorSet.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
@@ -481,8 +474,6 @@ class DynamicPromoList @JvmOverloads constructor(
         isAnimationCancelled = true
         currentAnimatorSet?.cancel()
         scrollJob?.cancel()
-        Log.d("Animate", "$currentItemView")
-        Log.d("Animate", "$itemBinding")
 
         itemBinding.moviePoster.alpha = 1f
         binding.playerView.visibility = View.INVISIBLE

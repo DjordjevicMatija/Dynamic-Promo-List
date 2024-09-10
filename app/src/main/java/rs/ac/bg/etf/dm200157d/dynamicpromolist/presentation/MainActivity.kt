@@ -28,6 +28,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import rs.ac.bg.etf.dm200157d.databinding.ActivityMainBinding
 import rs.ac.bg.etf.dm200157d.mdjlibrary.R
 import rs.ac.bg.etf.dm200157d.mdjlibrary.util.MovieFocusListener
@@ -64,7 +65,26 @@ class MainActivity : AppCompatActivity() {
 
                     focusJob = CoroutineScope(Dispatchers.IO).launch {
                         delay(500)
-                        mainViewModel.getVideo(movieId, onSuccess)
+                        if (movieId != mainViewModel.lastApiMovieId) {
+                            mainViewModel.getVideo(movieId, onSuccess)
+                            mainViewModel.lastApiMovieId = movieId
+                        } else if (mainViewModel.lastSuccessApiMovieId == movieId) {
+
+                            withContext(Dispatchers.Main) {
+
+                                mainViewModel.videoInfoLiveData.value?.videoUrl?.let {
+                                    mainViewModel.videoInfoLiveData.value?.audioUrl?.let { it1 ->
+                                        initializePlayer(
+                                            it,
+                                            it1
+                                        )
+                                        onSuccess()
+                                    }
+                                }
+
+                            }
+
+                        }
                     }
                 } else {
                     player.stop()
