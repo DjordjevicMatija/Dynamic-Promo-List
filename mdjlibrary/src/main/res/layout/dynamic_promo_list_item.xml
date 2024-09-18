@@ -30,7 +30,7 @@
     <TextView
         android:id="@+id/movie_title"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_alignStart="@id/image_card_view"
         android:layout_alignEnd="@+id/image_card_view"
         android:layout_marginHorizontal="10dp"

@@ -6,12 +6,15 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Rect
+import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.StateListDrawable
 import android.util.AttributeSet
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
@@ -44,7 +47,12 @@ class DynamicPromoList @JvmOverloads constructor(
     private var itemLayoutOrientation: ItemLayoutOrientation = ItemLayoutOrientation.VERTICAL
     private var titlePosition: TitlePosition = TitlePosition.TITLE_BELOW
     private var circularList: Boolean = false
+
     private var borderColor: Int = ContextCompat.getColor(context, R.color.highlighted_border_color)
+
+    private var textSize: Float = 16f
+    private var textColor: Int = Color.BLACK
+    private var textFont: Typeface? = null
 
     private val binding: ViewDynamicPromoListBinding =
         ViewDynamicPromoListBinding.inflate(LayoutInflater.from(context), this)
@@ -86,6 +94,17 @@ class DynamicPromoList @JvmOverloads constructor(
                     R.styleable.DynamicPromoList_borderColor,
                     ContextCompat.getColor(context, R.color.highlighted_border_color)
                 )
+
+                val rawTextSize = getDimension(R.styleable.DynamicPromoList_textSize, textSize)
+                textSize = TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_SP,
+                    rawTextSize,
+                    resources.displayMetrics
+                )
+
+                textColor = getColor(R.styleable.DynamicPromoList_textColor, textColor)
+
+                textFont = getFont(R.styleable.DynamicPromoList_textFont)
             } finally {
                 recycle()
             }
@@ -146,7 +165,10 @@ class DynamicPromoList @JvmOverloads constructor(
             titlePosition,
             movieFocusListener,
             borderColor,
-            circularList
+            circularList,
+            textSize,
+            textColor,
+            textFont
         )
         binding.recyclerView.adapter = adapter
     }
@@ -487,6 +509,9 @@ class DynamicPromoList @JvmOverloads constructor(
         animatorSet.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
+                if (titlePosition != TitlePosition.TITLE_INVISIBLE) {
+                    itemBinding.movieTitle.visibility = View.VISIBLE
+                }
                 collapsing = false
             }
         })
@@ -498,9 +523,6 @@ class DynamicPromoList @JvmOverloads constructor(
 
         itemBinding.moviePoster.alpha = 1f
         binding.playerView.visibility = View.INVISIBLE
-        if (titlePosition != TitlePosition.TITLE_INVISIBLE) {
-            itemBinding.movieTitle.visibility = View.VISIBLE
-        }
 
         collapsing = true
         animatorSet.start()

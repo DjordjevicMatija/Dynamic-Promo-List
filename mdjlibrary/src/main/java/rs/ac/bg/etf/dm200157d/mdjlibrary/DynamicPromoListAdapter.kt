@@ -1,6 +1,7 @@
 package rs.ac.bg.etf.dm200157d.mdjlibrary
 
 import android.content.Context
+import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.StateListDrawable
 import android.view.LayoutInflater
@@ -24,7 +25,10 @@ class DynamicPromoListAdapter(
     private val titlePosition: TitlePosition,
     private val movieFocusListener: MovieFocusListener,
     private val borderColor: Int,
-    private val circularList: Boolean = false,
+    private val circularList: Boolean,
+    private val textSize: Float,
+    private val textColor: Int,
+    private var textFont: Typeface? = null,
     private var movies: MovieList = emptyList()
 ) : RecyclerView.Adapter<DynamicPromoListAdapter.ViewHolder>() {
 
@@ -93,27 +97,13 @@ class DynamicPromoListAdapter(
     inner class ViewHolder(private val binding: DynamicPromoListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: Movie) {
-            binding.movieTitle.text = movie.title
 
-            val posterPath: String? = when (itemLayoutOrientation) {
-                ItemLayoutOrientation.HORIZONTAL -> movie.backdropPath
+            bindMovieTitle(binding, movie)
 
-                ItemLayoutOrientation.VERTICAL -> movie.posterPath
-            }
-            binding.moviePoster.loadImage(
-                url = "$posterPath",
-                placeholder = R.drawable.placeholder,
-                error = R.drawable.poster_not_found
-            )
-
-            val imageSelector = StateListDrawable()
-            imageSelector.addState(intArrayOf(android.R.attr.state_focused), ColorDrawable(borderColor))
-            imageSelector.addState(intArrayOf(), ContextCompat.getDrawable(context, R.drawable.default_border))
-
-            binding.moviePoster.background = imageSelector
+            bindMoviePoster(binding, movie)
 
             binding.moviePoster.setOnFocusChangeListener { _, hasFocus ->
-                if(!hasFocus){
+                if (!hasFocus) {
                     dynamicPromoList.animatePlayerViewCollapse()
                 }
                 movie.id?.let {
@@ -125,6 +115,47 @@ class DynamicPromoListAdapter(
                 }
             }
         }
+    }
+
+    private fun bindMovieTitle(binding: DynamicPromoListItemBinding, movie: Movie) {
+        binding.movieTitle.text = movie.title
+        binding.movieTitle.textSize = textSize
+        binding.movieTitle.setTextColor(textColor)
+        binding.movieTitle.typeface = textFont
+
+        binding.movieTitle.post {
+            val paint = binding.movieTitle.paint
+            val textHeight = paint.fontMetricsInt.descent - paint.fontMetricsInt.ascent
+
+            val totalHeight = textHeight * 2
+
+            val layoutParams = binding.movieTitle.layoutParams
+            layoutParams.height =
+                totalHeight + binding.movieTitle.paddingTop + binding.movieTitle.paddingBottom
+            binding.movieTitle.layoutParams = layoutParams
+        }
+    }
+
+    private fun bindMoviePoster(binding: DynamicPromoListItemBinding, movie: Movie) {
+        val posterPath: String? = when (itemLayoutOrientation) {
+            ItemLayoutOrientation.HORIZONTAL -> movie.backdropPath
+
+            ItemLayoutOrientation.VERTICAL -> movie.posterPath
+        }
+        binding.moviePoster.loadImage(
+            url = "$posterPath",
+            placeholder = R.drawable.placeholder,
+            error = R.drawable.poster_not_found
+        )
+
+        val imageSelector = StateListDrawable()
+        imageSelector.addState(intArrayOf(android.R.attr.state_focused), ColorDrawable(borderColor))
+        imageSelector.addState(
+            intArrayOf(),
+            ContextCompat.getDrawable(context, R.drawable.default_border)
+        )
+
+        binding.moviePoster.background = imageSelector
     }
 
     fun findListIndicesFromId(movieId: Int?): List<Int> {

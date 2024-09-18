@@ -12,5 +12,8 @@
         </attr>
         <attr name="circularList" format="boolean" />
         <attr name="borderColor" format="color" />
+        <attr name="textSize" format="dimension" />
+        <attr name="textColor" format="color" />
+        <attr name="textFont" format="reference" />
     </declare-styleable>
 </resources>
