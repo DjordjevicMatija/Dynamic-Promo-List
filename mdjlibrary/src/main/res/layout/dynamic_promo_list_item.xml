@@ -17,7 +17,6 @@
             android:id="@+id/movie_poster"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/image_selector"
             android:contentDescription="@string/image_description"
             android:focusable="true"
             android:focusableInTouchMode="true"

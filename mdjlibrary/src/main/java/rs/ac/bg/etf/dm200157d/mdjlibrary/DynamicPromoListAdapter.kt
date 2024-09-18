@@ -1,11 +1,14 @@
 package rs.ac.bg.etf.dm200157d.mdjlibrary
 
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.StateListDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import rs.ac.bg.etf.dm200157d.mdjlibrary.databinding.DynamicPromoListItemBinding
 import rs.ac.bg.etf.dm200157d.mdjlibrary.entities.Movie
@@ -20,6 +23,7 @@ class DynamicPromoListAdapter(
     private val itemLayoutOrientation: ItemLayoutOrientation,
     private val titlePosition: TitlePosition,
     private val movieFocusListener: MovieFocusListener,
+    private val borderColor: Int,
     private val circularList: Boolean = false,
     private var movies: MovieList = emptyList()
 ) : RecyclerView.Adapter<DynamicPromoListAdapter.ViewHolder>() {
@@ -101,6 +105,12 @@ class DynamicPromoListAdapter(
                 placeholder = R.drawable.placeholder,
                 error = R.drawable.poster_not_found
             )
+
+            val imageSelector = StateListDrawable()
+            imageSelector.addState(intArrayOf(android.R.attr.state_focused), ColorDrawable(borderColor))
+            imageSelector.addState(intArrayOf(), ContextCompat.getDrawable(context, R.drawable.default_border))
+
+            binding.moviePoster.background = imageSelector
 
             binding.moviePoster.setOnFocusChangeListener { _, hasFocus ->
                 if(!hasFocus){

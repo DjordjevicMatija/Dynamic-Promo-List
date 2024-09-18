@@ -11,5 +11,6 @@
             <enum name="titleInside" value="2" />
         </attr>
         <attr name="circularList" format="boolean" />
+        <attr name="borderColor" format="color" />
     </declare-styleable>
 </resources>

@@ -7,12 +7,17 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Rect
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.StateListDrawable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -39,6 +44,7 @@ class DynamicPromoList @JvmOverloads constructor(
     private var itemLayoutOrientation: ItemLayoutOrientation = ItemLayoutOrientation.VERTICAL
     private var titlePosition: TitlePosition = TitlePosition.TITLE_BELOW
     private var circularList: Boolean = false
+    private var borderColor: Int = ContextCompat.getColor(context, R.color.highlighted_border_color)
 
     private val binding: ViewDynamicPromoListBinding =
         ViewDynamicPromoListBinding.inflate(LayoutInflater.from(context), this)
@@ -57,7 +63,7 @@ class DynamicPromoList @JvmOverloads constructor(
     private var currentAnimatorSet: AnimatorSet? = null
     private var isAnimationCancelled = false
 
-    private var collapsing:Boolean = false
+    private var collapsing: Boolean = false
 
     init {
         context.theme.obtainStyledAttributes(
@@ -75,10 +81,24 @@ class DynamicPromoList @JvmOverloads constructor(
                 titlePosition = TitlePosition.entries.toTypedArray()[titlePositionInt]
 
                 circularList = getBoolean(R.styleable.DynamicPromoList_circularList, false)
+
+                borderColor = getColor(
+                    R.styleable.DynamicPromoList_borderColor,
+                    ContextCompat.getColor(context, R.color.highlighted_border_color)
+                )
             } finally {
                 recycle()
             }
         }
+        applyBorderColor()
+    }
+
+    private fun applyBorderColor() {
+        // Apply color to the shape drawable
+        val highlightedBorder = ContextCompat.getDrawable(context, R.drawable.highlighted_border) as GradientDrawable
+        highlightedBorder.setStroke(context.dpToPx(5), borderColor)
+
+        binding.playerView.foreground = highlightedBorder
     }
 
     fun addData(movies: MovieList) {
@@ -125,6 +145,7 @@ class DynamicPromoList @JvmOverloads constructor(
             itemLayoutOrientation,
             titlePosition,
             movieFocusListener,
+            borderColor,
             circularList
         )
         binding.recyclerView.adapter = adapter

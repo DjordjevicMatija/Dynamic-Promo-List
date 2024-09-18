@@ -12,9 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:circularList="true"
-        app:itemLayoutOrientation="horizontal"
+        app:itemLayoutOrientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:titlePosition="titleInvisible" />
+        app:titlePosition="titleBelow"
+        app:borderColor="@android:color/holo_orange_dark"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

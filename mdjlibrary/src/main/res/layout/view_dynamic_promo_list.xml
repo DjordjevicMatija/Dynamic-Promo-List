@@ -10,7 +10,6 @@
         android:layout_margin="20dp"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:foreground="@drawable/highlighted_border"
         app:cardBackgroundColor="@android:color/transparent"
         app:cardCornerRadius="15dp"
         app:cardElevation="0dp" />
