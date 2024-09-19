@@ -11,14 +11,18 @@
         android:id="@+id/dynamicPromoList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:borderColor="@android:color/holo_orange_dark"
         app:circularList="false"
         app:itemLayoutOrientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:titlePosition="titleBelow"
-        app:borderColor="@android:color/holo_orange_dark"
-        app:textSize="5sp"
         app:textColor="@android:color/holo_green_dark"
-        app:textFont="@font/sofadi_one_regular"/>
+        app:textFont="@font/sofadi_one_regular"
+        app:textSize="5sp"
+        app:titlePosition="titleBelow"
+        app:itemWidth="150dp"
+        app:itemHeight="150dp"
+        app:playerWidth="125dp"
+        app:playerHeight="125dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

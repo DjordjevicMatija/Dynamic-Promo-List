@@ -139,8 +139,8 @@ class MainActivity : AppCompatActivity() {
         playerView = PlayerView(this).apply {
             id = View.generateViewId()
             layoutParams = FrameLayout.LayoutParams(
-                context.dpToPx(700),
-                context.dpToPx(400)
+                context.dpToPx(700f),
+                context.dpToPx(400f)
             ).apply {
                 gravity = android.view.Gravity.CENTER
             }

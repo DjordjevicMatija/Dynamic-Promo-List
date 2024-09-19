@@ -15,7 +15,6 @@ import rs.ac.bg.etf.dm200157d.mdjlibrary.databinding.DynamicPromoListItemBinding
 import rs.ac.bg.etf.dm200157d.mdjlibrary.entities.Movie
 import rs.ac.bg.etf.dm200157d.mdjlibrary.entities.MovieList
 import rs.ac.bg.etf.dm200157d.mdjlibrary.util.MovieFocusListener
-import rs.ac.bg.etf.dm200157d.mdjlibrary.util.dpToPx
 import rs.ac.bg.etf.dm200157d.mdjlibrary.util.loadImage
 
 class DynamicPromoListAdapter(
@@ -28,7 +27,9 @@ class DynamicPromoListAdapter(
     private val circularList: Boolean,
     private val textSize: Float,
     private val textColor: Int,
-    private var textFont: Typeface? = null,
+    private var textFont: Typeface?,
+    private var itemWidth: Int,
+    private var itemHeight: Int,
     private var movies: MovieList = emptyList()
 ) : RecyclerView.Adapter<DynamicPromoListAdapter.ViewHolder>() {
 
@@ -40,17 +41,9 @@ class DynamicPromoListAdapter(
         val posterLayoutParams = binding.moviePoster.layoutParams as FrameLayout.LayoutParams
         val titleLayoutParams = binding.movieTitle.layoutParams as RelativeLayout.LayoutParams
 
-        when (itemLayoutOrientation) {
-            ItemLayoutOrientation.HORIZONTAL -> {
-                posterLayoutParams.width = context.dpToPx(DynamicPromoList.HORIZONTAL_WIDTH)
-                posterLayoutParams.height = context.dpToPx(DynamicPromoList.HORIZONTAL_HEIGHT)
-            }
+        posterLayoutParams.width = itemWidth
+        posterLayoutParams.height = itemHeight
 
-            ItemLayoutOrientation.VERTICAL -> {
-                posterLayoutParams.width = context.dpToPx(DynamicPromoList.VERTICAL_WIDTH)
-                posterLayoutParams.height = context.dpToPx(DynamicPromoList.VERTICAL_HEIGHT)
-            }
-        }
         binding.moviePoster.layoutParams = posterLayoutParams
 
         when (titlePosition) {

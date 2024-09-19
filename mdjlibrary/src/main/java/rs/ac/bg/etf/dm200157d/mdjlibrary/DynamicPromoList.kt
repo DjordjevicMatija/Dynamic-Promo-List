@@ -9,11 +9,8 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.Typeface
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.StateListDrawable
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -37,7 +34,6 @@ import rs.ac.bg.etf.dm200157d.mdjlibrary.util.MovieFocusListener
 import rs.ac.bg.etf.dm200157d.mdjlibrary.util.WidthProperty
 import rs.ac.bg.etf.dm200157d.mdjlibrary.util.dpToPx
 
-
 class DynamicPromoList @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -53,6 +49,11 @@ class DynamicPromoList @JvmOverloads constructor(
     private var textSize: Float = 16f
     private var textColor: Int = Color.BLACK
     private var textFont: Typeface? = null
+
+    private var itemWidth: Int = context.dpToPx(VERTICAL_WIDTH)
+    private var itemHeight: Int = context.dpToPx(VERTICAL_HEIGHT)
+    private var playerWidth: Int = context.dpToPx(PLAYER_WIDTH)
+    private var playerHeight: Int = context.dpToPx(PLAYER_HEIGHT)
 
     private val binding: ViewDynamicPromoListBinding =
         ViewDynamicPromoListBinding.inflate(LayoutInflater.from(context), this)
@@ -105,6 +106,32 @@ class DynamicPromoList @JvmOverloads constructor(
                 textColor = getColor(R.styleable.DynamicPromoList_textColor, textColor)
 
                 textFont = getFont(R.styleable.DynamicPromoList_textFont)
+
+                var defaultWidth = itemWidth
+                if (itemLayoutOrientation == ItemLayoutOrientation.HORIZONTAL)
+                    defaultWidth = context.dpToPx(HORIZONTAL_WIDTH)
+                itemWidth = getDimension(
+                    R.styleable.DynamicPromoList_itemWidth,
+                    defaultWidth.toFloat()
+                ).toInt()
+
+                var defaultHeight = itemHeight
+                if (itemLayoutOrientation == ItemLayoutOrientation.HORIZONTAL)
+                    defaultHeight = context.dpToPx(HORIZONTAL_HEIGHT)
+                itemHeight = getDimension(
+                    R.styleable.DynamicPromoList_itemHeight,
+                    defaultHeight.toFloat()
+                ).toInt()
+
+                playerWidth = getDimension(
+                    R.styleable.DynamicPromoList_playerWidth,
+                    playerWidth.toFloat()
+                ).toInt()
+
+                playerHeight = getDimension(
+                    R.styleable.DynamicPromoList_playerHeight,
+                    playerHeight.toFloat()
+                ).toInt()
             } finally {
                 recycle()
             }
@@ -114,8 +141,9 @@ class DynamicPromoList @JvmOverloads constructor(
 
     private fun applyBorderColor() {
         // Apply color to the shape drawable
-        val highlightedBorder = ContextCompat.getDrawable(context, R.drawable.highlighted_border) as GradientDrawable
-        highlightedBorder.setStroke(context.dpToPx(5), borderColor)
+        val highlightedBorder =
+            ContextCompat.getDrawable(context, R.drawable.highlighted_border) as GradientDrawable
+        highlightedBorder.setStroke(context.dpToPx(5f), borderColor)
 
         binding.playerView.foreground = highlightedBorder
     }
@@ -168,15 +196,16 @@ class DynamicPromoList @JvmOverloads constructor(
             circularList,
             textSize,
             textColor,
-            textFont
+            textFont,
+            itemWidth,
+            itemHeight
         )
         binding.recyclerView.adapter = adapter
     }
 
     fun setPlayerView(playerView: View) {
         val playerViewLayoutParams = LayoutParams(
-            context.dpToPx(PLAYER_WIDTH),
-            context.dpToPx(PLAYER_HEIGHT)
+            playerWidth, playerHeight
         )
         binding.playerView.addView(playerView, playerViewLayoutParams)
         binding.playerView.visibility = View.INVISIBLE
@@ -269,14 +298,9 @@ class DynamicPromoList @JvmOverloads constructor(
                 previousItemBinding.movieTitle.visibility = View.VISIBLE
             }
 
-            val collapsedWidth =
-                if (itemLayoutOrientation == ItemLayoutOrientation.HORIZONTAL) context.dpToPx(
-                    HORIZONTAL_WIDTH
-                ) else context.dpToPx(VERTICAL_WIDTH)
-            val collapsedHeight =
-                if (itemLayoutOrientation == ItemLayoutOrientation.HORIZONTAL) context.dpToPx(
-                    HORIZONTAL_HEIGHT
-                ) else context.dpToPx(VERTICAL_HEIGHT)
+            val collapsedWidth = itemWidth
+
+            val collapsedHeight = itemHeight
 
             val previousMoviePoster = previousItemBinding.moviePoster
             val previousItem = previousItemBinding.itemLayout
@@ -331,8 +355,8 @@ class DynamicPromoList @JvmOverloads constructor(
 
         val currentItemBinding = DynamicPromoListItemBinding.bind(currentItemView)
 
-        val expandedWidth = context.dpToPx(PLAYER_WIDTH)
-        val expandedHeight = context.dpToPx(PLAYER_HEIGHT)
+        val expandedWidth = playerWidth
+        val expandedHeight = playerHeight
 
         val currentMoviePoster = currentItemBinding.moviePoster
         val currentItemView = currentItemBinding.itemLayout
@@ -458,14 +482,8 @@ class DynamicPromoList @JvmOverloads constructor(
 
         val itemBinding = DynamicPromoListItemBinding.bind(currentItemView)
 
-        val collapsedWidth =
-            if (itemLayoutOrientation == ItemLayoutOrientation.HORIZONTAL) context.dpToPx(
-                HORIZONTAL_WIDTH
-            ) else context.dpToPx(VERTICAL_WIDTH)
-        val collapsedHeight =
-            if (itemLayoutOrientation == ItemLayoutOrientation.HORIZONTAL) context.dpToPx(
-                HORIZONTAL_HEIGHT
-            ) else context.dpToPx(VERTICAL_HEIGHT)
+        val collapsedWidth = itemWidth
+        val collapsedHeight = itemHeight
 
         val moviePoster = itemBinding.moviePoster
         val itemView = itemBinding.itemLayout
@@ -529,12 +547,12 @@ class DynamicPromoList @JvmOverloads constructor(
     }
 
     companion object {
-        const val HORIZONTAL_WIDTH = 220
-        const val HORIZONTAL_HEIGHT = 124
-        const val VERTICAL_WIDTH = 120
-        const val VERTICAL_HEIGHT = 180
+        const val HORIZONTAL_WIDTH = 220f
+        const val HORIZONTAL_HEIGHT = 124f
+        const val VERTICAL_WIDTH = 120f
+        const val VERTICAL_HEIGHT = 180f
         const val CIRCULAR_LIST_SCALE = 10
-        const val PLAYER_WIDTH = 330
-        const val PLAYER_HEIGHT = 186
+        const val PLAYER_WIDTH = 330f
+        const val PLAYER_HEIGHT = 186f
     }
 }

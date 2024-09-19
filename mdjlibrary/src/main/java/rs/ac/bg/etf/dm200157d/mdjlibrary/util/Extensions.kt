@@ -1,8 +1,6 @@
 package rs.ac.bg.etf.dm200157d.mdjlibrary.util
 
 import android.content.Context
-import android.util.Property
-import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -31,7 +29,7 @@ fun ImageView.loadImage(
     glideRequest.into(this)
 }
 
-fun Context.dpToPx(dp: Int): Int {
+fun Context.dpToPx(dp: Float): Int {
     val density = resources.displayMetrics.density
     return (dp * density).toInt()
 }
