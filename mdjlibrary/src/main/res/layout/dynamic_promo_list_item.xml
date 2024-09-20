@@ -27,6 +27,48 @@
 
     </androidx.cardview.widget.CardView>
 
+    <RelativeLayout
+        android:id="@+id/side_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/image_card_view">
+
+        <TextView
+            android:id="@+id/side_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:gravity="start"
+            android:text="@string/title"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true" />
+
+        <TextView
+            android:id="@+id/side_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/side_title"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:gravity="start"
+            android:text="@string/title" />
+
+        <TextView
+            android:id="@+id/side_overview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/side_rating"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:ellipsize="end"
+            android:gravity="start"
+            android:text="@string/title" />
+
+    </RelativeLayout>
+
     <TextView
         android:id="@+id/movie_title"
         android:layout_width="wrap_content"

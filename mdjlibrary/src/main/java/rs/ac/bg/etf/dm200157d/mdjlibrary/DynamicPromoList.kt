@@ -11,7 +11,6 @@ import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
@@ -46,14 +45,24 @@ class DynamicPromoList @JvmOverloads constructor(
 
     private var borderColor: Int = ContextCompat.getColor(context, R.color.highlighted_border_color)
 
-    private var textSize: Float = 16f
-    private var textColor: Int = Color.BLACK
-    private var textFont: Typeface? = null
+    private var titleSize: Float = 16f
+    private var titleColor: Int = Color.BLACK
+    private var titleFont: Typeface? = null
 
-    private var itemWidth: Int = context.dpToPx(VERTICAL_WIDTH)
-    private var itemHeight: Int = context.dpToPx(VERTICAL_HEIGHT)
+    private var posterWidth: Int = context.dpToPx(VERTICAL_WIDTH)
+    private var posterHeight: Int = context.dpToPx(VERTICAL_HEIGHT)
     private var playerWidth: Int = context.dpToPx(PLAYER_WIDTH)
     private var playerHeight: Int = context.dpToPx(PLAYER_HEIGHT)
+
+    private var displayOverview: Boolean = false
+
+    private var sideTitleSize: Float = 16f
+    private var sideTitleColor: Int = Color.BLACK
+    private var sideTitleFont: Typeface? = null
+
+    private var overviewSize: Float = 28f
+    private var overviewColor: Int = Color.BLACK
+    private var overviewFont: Typeface? = null
 
     private val binding: ViewDynamicPromoListBinding =
         ViewDynamicPromoListBinding.inflate(LayoutInflater.from(context), this)
@@ -96,30 +105,25 @@ class DynamicPromoList @JvmOverloads constructor(
                     ContextCompat.getColor(context, R.color.highlighted_border_color)
                 )
 
-                val rawTextSize = getDimension(R.styleable.DynamicPromoList_textSize, textSize)
-                textSize = TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_SP,
-                    rawTextSize,
-                    resources.displayMetrics
-                )
+                titleSize = getDimension(R.styleable.DynamicPromoList_titleSize, titleSize)
 
-                textColor = getColor(R.styleable.DynamicPromoList_textColor, textColor)
+                titleColor = getColor(R.styleable.DynamicPromoList_titleColor, titleColor)
 
-                textFont = getFont(R.styleable.DynamicPromoList_textFont)
+                titleFont = getFont(R.styleable.DynamicPromoList_titleFont)
 
-                var defaultWidth = itemWidth
+                var defaultWidth = posterWidth
                 if (itemLayoutOrientation == ItemLayoutOrientation.HORIZONTAL)
                     defaultWidth = context.dpToPx(HORIZONTAL_WIDTH)
-                itemWidth = getDimension(
-                    R.styleable.DynamicPromoList_itemWidth,
+                posterWidth = getDimension(
+                    R.styleable.DynamicPromoList_posterWidth,
                     defaultWidth.toFloat()
                 ).toInt()
 
-                var defaultHeight = itemHeight
+                var defaultHeight = posterHeight
                 if (itemLayoutOrientation == ItemLayoutOrientation.HORIZONTAL)
                     defaultHeight = context.dpToPx(HORIZONTAL_HEIGHT)
-                itemHeight = getDimension(
-                    R.styleable.DynamicPromoList_itemHeight,
+                posterHeight = getDimension(
+                    R.styleable.DynamicPromoList_posterHeight,
                     defaultHeight.toFloat()
                 ).toInt()
 
@@ -132,6 +136,23 @@ class DynamicPromoList @JvmOverloads constructor(
                     R.styleable.DynamicPromoList_playerHeight,
                     playerHeight.toFloat()
                 ).toInt()
+
+                displayOverview = getBoolean(R.styleable.DynamicPromoList_displayOverview, false)
+
+                sideTitleSize = getDimension(R.styleable.DynamicPromoList_sideTitleSize, titleSize)
+
+                sideTitleColor = getColor(R.styleable.DynamicPromoList_sideTitleColor, titleColor)
+
+                sideTitleFont = getFont(R.styleable.DynamicPromoList_sideTitleFont)
+                if (sideTitleFont == null) {
+                    sideTitleFont = titleFont
+                }
+
+                overviewSize = getDimension(R.styleable.DynamicPromoList_overviewSize, overviewSize)
+
+                overviewColor = getColor(R.styleable.DynamicPromoList_overviewColor, overviewColor)
+
+                overviewFont = getFont(R.styleable.DynamicPromoList_overviewFont)
             } finally {
                 recycle()
             }
@@ -140,7 +161,6 @@ class DynamicPromoList @JvmOverloads constructor(
     }
 
     private fun applyBorderColor() {
-        // Apply color to the shape drawable
         val highlightedBorder =
             ContextCompat.getDrawable(context, R.drawable.highlighted_border) as GradientDrawable
         highlightedBorder.setStroke(context.dpToPx(5f), borderColor)
@@ -194,11 +214,18 @@ class DynamicPromoList @JvmOverloads constructor(
             movieFocusListener,
             borderColor,
             circularList,
-            textSize,
-            textColor,
-            textFont,
-            itemWidth,
-            itemHeight
+            titleSize,
+            titleColor,
+            titleFont,
+            posterWidth,
+            posterHeight,
+            playerHeight,
+            sideTitleSize,
+            sideTitleColor,
+            sideTitleFont,
+            overviewSize,
+            overviewColor,
+            overviewFont
         )
         binding.recyclerView.adapter = adapter
     }
@@ -294,13 +321,14 @@ class DynamicPromoList @JvmOverloads constructor(
             val previousItemBinding = DynamicPromoListItemBinding.bind(previousItemView)
 
             previousItemBinding.moviePoster.alpha = 1f
+            previousItemBinding.sideLayout.visibility = View.INVISIBLE
             if (titlePosition != TitlePosition.TITLE_INVISIBLE) {
                 previousItemBinding.movieTitle.visibility = View.VISIBLE
             }
 
-            val collapsedWidth = itemWidth
+            val collapsedWidth = posterWidth
 
-            val collapsedHeight = itemHeight
+            val collapsedHeight = posterHeight
 
             val previousMoviePoster = previousItemBinding.moviePoster
             val previousItem = previousItemBinding.itemLayout
@@ -351,6 +379,19 @@ class DynamicPromoList @JvmOverloads constructor(
                 previousTopMarginAnimator,
                 previousBottomMarginAnimator
             )
+
+            if (displayOverview) {
+                val currentSideLayout = previousItemBinding.sideLayout
+
+                val currentSideLayoutWidthAnimator = ObjectAnimator.ofInt(
+                    currentSideLayout,
+                    WidthProperty(),
+                    currentSideLayout.width,
+                    0
+                )
+
+                animatorSet.playTogether(currentSideLayoutWidthAnimator)
+            }
         }
 
         val currentItemBinding = DynamicPromoListItemBinding.bind(currentItemView)
@@ -403,6 +444,19 @@ class DynamicPromoList @JvmOverloads constructor(
             currentBottomMarginAnimator
         )
 
+        if (displayOverview) {
+            val currentSideLayout = currentItemBinding.sideLayout
+
+            val currentSideLayoutWidthAnimator = ObjectAnimator.ofInt(
+                currentSideLayout,
+                WidthProperty(),
+                currentSideLayout.width,
+                context.dpToPx(OVERVIEW_WIDTH.toFloat())
+            )
+
+            animatorSet.playTogether(currentSideLayoutWidthAnimator)
+        }
+
         animatorSet.duration = 300
         animatorSet.interpolator = AccelerateDecelerateInterpolator()
 
@@ -422,6 +476,7 @@ class DynamicPromoList @JvmOverloads constructor(
                             if (!collapsing) {
                                 binding.playerView.visibility = View.VISIBLE
                                 currentItemBinding.moviePoster.alpha = 0f
+                                currentItemBinding.sideLayout.visibility = View.VISIBLE
                             }
                         }
                     }
@@ -433,6 +488,7 @@ class DynamicPromoList @JvmOverloads constructor(
 
                 binding.playerView.visibility = View.INVISIBLE
                 currentItemBinding.moviePoster.alpha = 1f
+                currentItemBinding.sideLayout.visibility = View.INVISIBLE
                 if (titlePosition != TitlePosition.TITLE_INVISIBLE) {
                     currentItemBinding.movieTitle.visibility = View.VISIBLE
                 }
@@ -482,8 +538,8 @@ class DynamicPromoList @JvmOverloads constructor(
 
         val itemBinding = DynamicPromoListItemBinding.bind(currentItemView)
 
-        val collapsedWidth = itemWidth
-        val collapsedHeight = itemHeight
+        val collapsedWidth = posterWidth
+        val collapsedHeight = posterHeight
 
         val moviePoster = itemBinding.moviePoster
         val itemView = itemBinding.itemLayout
@@ -521,6 +577,20 @@ class DynamicPromoList @JvmOverloads constructor(
             topMarginAnimator,
             bottomMarginAnimator
         )
+
+        if (displayOverview) {
+            val currentSideLayout = itemBinding.sideLayout
+
+            val currentSideLayoutWidthAnimator = ObjectAnimator.ofInt(
+                currentSideLayout,
+                WidthProperty(),
+                currentSideLayout.width,
+                0
+            )
+
+            animatorSet.playTogether(currentSideLayoutWidthAnimator)
+        }
+
         animatorSet.duration = 300
         animatorSet.interpolator = AccelerateDecelerateInterpolator()
 
@@ -540,6 +610,7 @@ class DynamicPromoList @JvmOverloads constructor(
         scrollJob?.cancel()
 
         itemBinding.moviePoster.alpha = 1f
+        itemBinding.sideLayout.visibility = View.INVISIBLE
         binding.playerView.visibility = View.INVISIBLE
 
         collapsing = true
@@ -554,5 +625,6 @@ class DynamicPromoList @JvmOverloads constructor(
         const val CIRCULAR_LIST_SCALE = 10
         const val PLAYER_WIDTH = 330f
         const val PLAYER_HEIGHT = 186f
+        const val OVERVIEW_WIDTH = 200
     }
 }

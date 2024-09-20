@@ -4,9 +4,11 @@ import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.StateListDrawable
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
@@ -25,11 +27,18 @@ class DynamicPromoListAdapter(
     private val movieFocusListener: MovieFocusListener,
     private val borderColor: Int,
     private val circularList: Boolean,
-    private val textSize: Float,
-    private val textColor: Int,
-    private var textFont: Typeface?,
-    private var itemWidth: Int,
-    private var itemHeight: Int,
+    private val titleSize: Float,
+    private val titleColor: Int,
+    private var titleFont: Typeface?,
+    private var posterWidth: Int,
+    private var posterHeight: Int,
+    private var playerHeight: Int,
+    private val sideTitleSize: Float,
+    private val sideTitleColor: Int,
+    private var sideTitleFont: Typeface?,
+    private val overviewSize: Float,
+    private val overviewColor: Int,
+    private var overviewFont: Typeface?,
     private var movies: MovieList = emptyList()
 ) : RecyclerView.Adapter<DynamicPromoListAdapter.ViewHolder>() {
 
@@ -38,13 +47,24 @@ class DynamicPromoListAdapter(
             LayoutInflater.from(parent.context), parent, false
         )
 
-        val posterLayoutParams = binding.moviePoster.layoutParams as FrameLayout.LayoutParams
-        val titleLayoutParams = binding.movieTitle.layoutParams as RelativeLayout.LayoutParams
+        setMoviePosterLayout(binding)
+        setMovieTitleLayout(binding)
+        setOverviewLayout(binding)
 
-        posterLayoutParams.width = itemWidth
-        posterLayoutParams.height = itemHeight
+        return ViewHolder(binding)
+    }
+
+    private fun setMoviePosterLayout(binding: DynamicPromoListItemBinding) {
+        val posterLayoutParams = binding.moviePoster.layoutParams as FrameLayout.LayoutParams
+
+        posterLayoutParams.width = posterWidth
+        posterLayoutParams.height = posterHeight
 
         binding.moviePoster.layoutParams = posterLayoutParams
+    }
+
+    private fun setMovieTitleLayout(binding: DynamicPromoListItemBinding) {
+        val titleLayoutParams = binding.movieTitle.layoutParams as RelativeLayout.LayoutParams
 
         when (titlePosition) {
             TitlePosition.TITLE_BELOW -> {
@@ -69,8 +89,15 @@ class DynamicPromoListAdapter(
             }
         }
         binding.movieTitle.layoutParams = titleLayoutParams
+    }
 
-        return ViewHolder(binding)
+    private fun setOverviewLayout(binding: DynamicPromoListItemBinding) {
+        val sideLayoutParams = binding.sideLayout.layoutParams
+
+        sideLayoutParams.width = 0
+        sideLayoutParams.height = playerHeight
+        binding.sideLayout.layoutParams = sideLayoutParams
+        binding.sideLayout.visibility = View.INVISIBLE
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -91,9 +118,9 @@ class DynamicPromoListAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: Movie) {
 
-            bindMovieTitle(binding, movie)
-
             bindMoviePoster(binding, movie)
+            bindMovieTitle(binding, movie)
+            bindOverview(binding, movie)
 
             binding.moviePoster.setOnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {
@@ -112,9 +139,9 @@ class DynamicPromoListAdapter(
 
     private fun bindMovieTitle(binding: DynamicPromoListItemBinding, movie: Movie) {
         binding.movieTitle.text = movie.title
-        binding.movieTitle.textSize = textSize
-        binding.movieTitle.setTextColor(textColor)
-        binding.movieTitle.typeface = textFont
+        binding.movieTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleSize)
+        binding.movieTitle.setTextColor(titleColor)
+        binding.movieTitle.typeface = titleFont
 
         binding.movieTitle.post {
             val paint = binding.movieTitle.paint
@@ -149,6 +176,37 @@ class DynamicPromoListAdapter(
         )
 
         binding.moviePoster.background = imageSelector
+    }
+
+    private fun bindOverview(binding: DynamicPromoListItemBinding, movie: Movie) {
+        binding.sideTitle.text = movie.title
+        binding.sideTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, sideTitleSize)
+        binding.sideTitle.setTextColor(sideTitleColor)
+        binding.sideTitle.typeface = sideTitleFont
+        binding.sideTitle.isSelected = true
+        binding.sideTitle.setHorizontallyScrolling(true)
+
+        binding.sideRating.text = String.format("Rating: %.1f", movie.voteAverage)
+        binding.sideRating.setTextSize(TypedValue.COMPLEX_UNIT_PX, overviewSize)
+        binding.sideRating.setTextColor(overviewColor)
+        binding.sideRating.typeface = overviewFont
+
+        binding.sideOverview.text = movie.overview
+        binding.sideOverview.setTextSize(TypedValue.COMPLEX_UNIT_PX, overviewSize)
+        binding.sideOverview.setTextColor(overviewColor)
+        binding.sideOverview.typeface = overviewFont
+
+        binding.sideOverview.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                val paint = binding.sideOverview.paint
+                val lineHeight = paint.fontMetricsInt.bottom - paint.fontMetricsInt.top
+                val viewHeight = binding.sideTitle.top + playerHeight - binding.sideOverview.top
+
+                binding.sideOverview.maxLines = viewHeight / lineHeight
+                binding.sideOverview.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     fun findListIndicesFromId(movieId: Int?): List<Int> {

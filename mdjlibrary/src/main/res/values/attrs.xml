@@ -12,12 +12,19 @@
         </attr>
         <attr name="circularList" format="boolean" />
         <attr name="borderColor" format="color" />
-        <attr name="textSize" format="dimension" />
-        <attr name="textColor" format="color" />
-        <attr name="textFont" format="reference" />
-        <attr name="itemWidth" format="dimension" />
-        <attr name="itemHeight" format="dimension" />
+        <attr name="titleSize" format="dimension" />
+        <attr name="titleColor" format="color" />
+        <attr name="titleFont" format="reference" />
+        <attr name="posterWidth" format="dimension" />
+        <attr name="posterHeight" format="dimension" />
         <attr name="playerWidth" format="dimension" />
         <attr name="playerHeight" format="dimension" />
+        <attr name="displayOverview" format="boolean" />
+        <attr name="sideTitleSize" format="dimension" />
+        <attr name="sideTitleColor" format="color" />
+        <attr name="sideTitleFont" format="reference" />
+        <attr name="overviewSize" format="dimension" />
+        <attr name="overviewColor" format="color" />
+        <attr name="overviewFont" format="reference" />
     </declare-styleable>
 </resources>
