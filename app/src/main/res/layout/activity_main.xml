@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".dynamicpromolist.presentation.MainActivity">
+    tools:context=".dynamicpromolist.presentation.MainActivity"
+    android:background="@color/background">
 
     <rs.ac.bg.etf.dm200157d.mdjlibrary.DynamicPromoList
         android:id="@+id/dynamicPromoList"
@@ -25,6 +26,7 @@
         app:sideTitleColor="@android:color/holo_red_light"
         app:sideTitleSize="25sp"
         app:overviewFont="@font/oswald"
-        app:overviewSize="16sp"/>
+        app:overviewSize="16sp"
+/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
