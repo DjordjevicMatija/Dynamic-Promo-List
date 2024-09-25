@@ -4,6 +4,9 @@ kotlin = "1.9.25"
 coreKtx = "1.13.1"
 appcompat = "1.7.0"
 composeBom = "2024.06.00"
+robolectric = "4.9.1"
+slf4jApi = "2.0.5"
+slf4jSimple = "2.0.0"
 tvFoundation = "1.0.0-alpha11"
 tvMaterial = "1.0.0-rc01"
 lifecycleRuntimeKtx = "2.8.4"
@@ -17,6 +20,11 @@ kotlinx-serialization = "1.6.3"
 hilt = "2.52"
 glide = "4.15.1"
 exoplayer = "1.0.0"
+android-test = "1.2.1"
+espresso = "3.6.1"
+junit = "4.13.2"
+mockk = "1.13.5"
+coroutines-test = "1.6.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,11 +51,19 @@ okhttp3-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
-glide = {group = "com.github.bumptech.glide", name = "glide", version.ref = "glide"}
-glide-compiler = {group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide"}
-media3-exoplayer = {group = "androidx.media3", name = "media3-exoplayer", version.ref = "exoplayer"}
-media3-ui = {group = "androidx.media3", name = "media3-ui", version.ref = "exoplayer"}
-media3-exoplayer-hls = {group = "androidx.media3", name = "media3-exoplayer-hls", version.ref = "exoplayer"}
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
+media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "exoplayer" }
+media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "exoplayer" }
+media3-exoplayer-hls = { group = "androidx.media3", name = "media3-exoplayer-hls", version.ref = "exoplayer" }
+android-test = { group = "androidx.test.ext", name = "junit", version.ref = "android-test" }
+espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines-test" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4jApi" }
+slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4jSimple" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
