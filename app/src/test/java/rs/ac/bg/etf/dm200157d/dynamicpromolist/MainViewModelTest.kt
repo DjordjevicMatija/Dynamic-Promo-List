@@ -1,7 +1,10 @@
 package rs.ac.bg.etf.dm200157d.dynamicpromolist
 
 import android.os.Looper
+<<<<<<< HEAD
 import android.util.Log
+=======
+>>>>>>> a490f86bb40ede84043983e1aa5daa8d32aeda3a
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -13,8 +16,11 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+<<<<<<< HEAD
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+=======
+>>>>>>> a490f86bb40ede84043983e1aa5daa8d32aeda3a
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,16 +29,22 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.MovieListResponse
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.MovieResponse
+<<<<<<< HEAD
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.NetworkResponse
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.VideoListResponse
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.remote.models.VideoResponse
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.data.repository.Repository
+=======
+>>>>>>> a490f86bb40ede84043983e1aa5daa8d32aeda3a
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.DataResult
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.UseCase
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.VideoInfoUseCase
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.entities.MovieDTO
+<<<<<<< HEAD
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.entities.Video
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.domain.util.toVideo
+=======
+>>>>>>> a490f86bb40ede84043983e1aa5daa8d32aeda3a
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.presentation.MainViewModel
 import rs.ac.bg.etf.dm200157d.dynamicpromolist.util.getOrAwaitValue
 
@@ -59,7 +71,11 @@ class MainViewModelTest {
     }
 
     @Test
+<<<<<<< HEAD
     fun `getMovies returns success`() = runTest {
+=======
+    fun `getMovies returns success and updates LiveData`() = runTest {
+>>>>>>> a490f86bb40ede84043983e1aa5daa8d32aeda3a
         val mockMovieResponse = MovieResponse(
             id = 1,
             title = "Mock Movie",
@@ -100,7 +116,11 @@ class MainViewModelTest {
     }
 
     @Test
+<<<<<<< HEAD
     fun `getMovies returns failure`() = runTest {
+=======
+    fun `getMovies returns failure and updates LiveData`() = runTest {
+>>>>>>> a490f86bb40ede84043983e1aa5daa8d32aeda3a
         val mockError = Exception("Failed to fetch movies")
 
         coEvery { useCase.getMovies() } returns DataResult.Failure(mockError)
@@ -115,6 +135,7 @@ class MainViewModelTest {
 
         coVerify { useCase.getMovies() }
     }
+<<<<<<< HEAD
 
     @Test
     fun `getVideo returns success trailer found`() = runTest {
@@ -191,4 +212,6 @@ class MainViewModelTest {
 
         coVerify { useCase.getVideo(1) }
     }
+=======
+>>>>>>> a490f86bb40ede84043983e1aa5daa8d32aeda3a
 }
