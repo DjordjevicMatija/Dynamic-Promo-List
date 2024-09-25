@@ -91,6 +91,14 @@ dependencies {
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.ui)
     implementation(libs.media3.exoplayer.hls)
+    androidTestImplementation(libs.android.test)
+    androidTestImplementation(libs.espresso)
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.coroutines.test)
+    implementation(libs.slf4j.api)
+    implementation(libs.slf4j.simple)
+    testImplementation(libs.robolectric)
 }
 
 kapt {
