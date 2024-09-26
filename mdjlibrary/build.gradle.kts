@@ -33,6 +33,13 @@ android {
     viewBinding {
         enable = true
     }
+
+    packaging {
+        resources {
+            excludes += "META-INF/LICENSE.md"
+            excludes += "META-INF/LICENSE-notice.md"
+        }
+    }
 }
 
 dependencies {
@@ -40,9 +47,12 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.glide)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
     annotationProcessor(libs.glide.compiler)
     androidTestImplementation(libs.android.test)
     androidTestImplementation(libs.espresso)
-    testImplementation(libs.junit)
-    testImplementation(libs.mockk)
+    androidTestImplementation(libs.espresso.contrib)
+    androidTestImplementation(libs.androidx.rules)
+    androidTestImplementation(libs.mockk)
 }

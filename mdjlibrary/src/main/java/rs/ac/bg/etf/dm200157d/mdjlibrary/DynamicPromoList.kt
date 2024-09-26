@@ -83,7 +83,10 @@ class DynamicPromoList @JvmOverloads constructor(
 
     private var collapsing: Boolean = false
 
+    private val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
+
     init {
+
         context.theme.obtainStyledAttributes(
             attrs,
             R.styleable.DynamicPromoList,
@@ -158,6 +161,10 @@ class DynamicPromoList @JvmOverloads constructor(
             }
         }
         applyBorderColor()
+    }
+
+    fun getRecyclerView(): RecyclerView {
+        return recyclerView
     }
 
     private fun applyBorderColor() {
