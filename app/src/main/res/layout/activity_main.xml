@@ -5,28 +5,44 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".dynamicpromolist.presentation.MainActivity"
-    android:background="@color/background">
+    android:background="@color/background_secondary"
+    tools:context=".dynamicpromolist.presentation.MainActivity">
+
+    <TextView
+        android:id="@+id/popularTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_bold"
+        android:paddingHorizontal="40dp"
+        android:text="@string/popular"
+        android:textColor="@color/text_primary"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.05" />
 
     <rs.ac.bg.etf.dm200157d.mdjlibrary.DynamicPromoList
         android:id="@+id/dynamicPromoList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:borderColor="@android:color/holo_orange_dark"
+        app:borderColor="@color/accent_primary"
         app:circularList="false"
+        app:displayOverview="true"
         app:itemLayoutOrientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:titleColor="@android:color/holo_red_light"
-        app:titleFont="@font/oswald"
-        app:titleSize="18sp"
-        app:titlePosition="titleBelow"
-        app:displayOverview="true"
-        app:sideTitleFont="@font/oswald"
-        app:sideTitleColor="@android:color/holo_red_light"
-        app:sideTitleSize="25sp"
-        app:overviewFont="@font/oswald"
+        app:layout_constraintTop_toBottomOf="@id/popularTextView"
+        app:layout_constraintVertical_bias="0.0"
+        app:overviewColor="@color/text_secondary"
+        app:overviewFont="@font/montserrat_regular"
         app:overviewSize="16sp"
-/>
+        app:sideTitleColor="@color/text_primary"
+        app:sideTitleFont="@font/montserrat_medium"
+        app:sideTitleSize="24sp"
+        app:titleColor="@color/text_primary"
+        app:titleFont="@font/montserrat_medium"
+        app:titlePosition="titleBelow"
+        app:titleSize="20sp"
+        tools:layout_editor_absoluteX="-16dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

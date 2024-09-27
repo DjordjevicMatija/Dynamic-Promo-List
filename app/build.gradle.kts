@@ -99,6 +99,7 @@ dependencies {
     implementation(libs.slf4j.api)
     implementation(libs.slf4j.simple)
     testImplementation(libs.robolectric)
+    implementation(libs.leakcanary.android)
 }
 
 kapt {

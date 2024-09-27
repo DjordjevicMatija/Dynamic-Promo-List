@@ -15,14 +15,11 @@ fun atPosition(position: Int, itemMatcher: Matcher<View>): Matcher<View> {
         }
 
         override fun matchesSafely(view: View): Boolean {
-            // Check if the view is a RecyclerView
             if (view !is RecyclerView) return false
 
-            // Get the ViewHolder for the specified position
             val viewHolder = view.findViewHolderForAdapterPosition(position)
                 ?: return false
 
-            // Ensure the item's root view matches the itemMatcher
             return itemMatcher.matches(viewHolder.itemView)
         }
     }
